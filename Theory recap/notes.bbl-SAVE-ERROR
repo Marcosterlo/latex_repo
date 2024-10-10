@@ -1,0 +1,251 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{iqc-intro}{article}{}
+      \name{author}{1}{}{%
+        {{hash=bd5b3a8e42f635040868ca0b8dfff31a}{%
+           family={Scherer},
+           familyi={S\bibinitperiod},
+           given={Carsten\bibnamedelima W},
+           giveni={C\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \strng{fullhash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \strng{bibnamehash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \strng{authorbibnamehash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \strng{authornamehash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \strng{authorfullhash}{bd5b3a8e42f635040868ca0b8dfff31a}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Control Systems Magazine}
+      \field{number}{3}
+      \field{title}{Dissipativity and integral quadratic constraints: Tailored computational robustness tests for complex interconnections}
+      \field{volume}{42}
+      \field{year}{2022}
+      \field{pages}{115\bibrangedash 139}
+      \range{pages}{25}
+    \endentry
+    \entry{css-paper}{article}{}
+      \name{author}{3}{}{%
+        {{hash=71c75d1d442d62c5d3b8b280f51f03e4}{%
+           family={Souza},
+           familyi={S\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=3b2cd63f474cd35a514a5cfd02975fd2}{%
+           family={Tarbouriech},
+           familyi={T\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d2d25c21d283fb6f333d3bc5e0d6bea9}{%
+           family={Girard},
+           familyi={G\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \strng{fullhash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \strng{bibnamehash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \strng{authorbibnamehash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \strng{authornamehash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \strng{authorfullhash}{9d57b5611c37a476f3b1c06e7bb25fe4}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Control Systems Letters}
+      \field{title}{Event-Triggered Neural Network Control for LTI Systems}
+      \field{volume}{7}
+      \field{year}{2023}
+      \field{pages}{1381\bibrangedash 1386}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1109/LCSYS.2023.3242835
+      \endverb
+      \keyw{Neural networks;Symmetric matrices;Artificial neural networks;Stability criteria;Linear systems;Linear matrix inequalities;Computational efficiency;Event-triggered control;neural network control;quadratic constraints;linear matrix inequalities;Lyapunov theory}
+    \endentry
+    \entry{css-extended}{inbook}{}
+      \name{author}{3}{}{%
+        {{hash=e5f9cdc11709399f7eee68fdf047877e}{%
+           family={Tarbouriech},
+           familyi={T\bibinitperiod},
+           given={Sophie},
+           giveni={S\bibinitperiod}}}%
+        {{hash=2d028188fccf5559331009dac991136f}{%
+           family={De\bibnamedelima Souza},
+           familyi={D\bibinitperiod\bibinitdelim S\bibinitperiod},
+           given={Carla},
+           giveni={C\bibinitperiod}}}%
+        {{hash=c287fd0c6a662cc10a08563ad239907f}{%
+           family={Girard},
+           familyi={G\bibinitperiod},
+           given={Antoine},
+           giveni={A\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=4e54f9788d33fd11e9ffe18b9e01844b}{%
+           family={Postoyan},
+           familyi={P\bibinitperiod},
+           given={Romain},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f1f8f3cd4ca8bff2de8af333428d54de}{%
+           family={Frasca},
+           familyi={F\bibinitperiod},
+           given={Paolo},
+           giveni={P\bibinitperiod}}}%
+        {{hash=dc9aba1fc7b44168af888c03e34f4f6c}{%
+           family={Panteley},
+           familyi={P\bibinitperiod},
+           given={Elena},
+           giveni={E\bibinitperiod}}}%
+        {{hash=4df146cd6552a29e096e460b7ece6c98}{%
+           family={Zaccarian},
+           familyi={Z\bibinitperiod},
+           given={Luca},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cham}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature Switzerland}%
+      }
+      \strng{namehash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{fullhash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{bibnamehash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{authorbibnamehash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{authornamehash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{authorfullhash}{d4a7bd375a2f6f09eb220615a98fa2a9}
+      \strng{editorbibnamehash}{a9abb92b099b6fc464de9f8aa28c4db2}
+      \strng{editornamehash}{a9abb92b099b6fc464de9f8aa28c4db2}
+      \strng{editorfullhash}{b3c932c422036e9313e2eacac5dfd62e}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The chapter deals with the design of event-triggering mechanismsEventevent-triggering mechanism (ETM) for discrete-time linear systemsLinearsystems stabilized by neural networkNetworkneural network controllers. The proposed event-triggering mechanismEventevent-triggering mechanism is based on the use of local sector conditions related to the activation functionsActivation function, to reduce the computational cost associated with the neural networkNetworkneural network evaluation. Such a mechanism avoids redundant computations by updating only a portion of the layersLayer instead of evaluating periodically the complete neural networkNetworkneural network. Sufficient matrix inequality conditions are provided to design the parameters of the event-triggering mechanism Eventevent-triggering mechanism and compute an inner-approximation of the region of attractionRegion of attraction for the feedback system. The theoretical conditions are obtained by using a quadratic Lyapunov functionLyapunovfunction and an adequate abstraction of the activation functionsActivation function via generalised sector condition to decide whether the outputs of the layersLayer should be transmitted through the network or not. Convex optimisation procedures can be associated to the theoretical conditions in order to maximise the approximation of the region of attractionRegion of attraction or to minimise the number of updates. The advantages and the drawbacks of our approach are illustrated in an example borrowed from the literature, namely the nonlinear inverted pendulum system stabilized by a trained neural networkNetworkneural network.}
+      \field{booktitle}{Hybrid and Networked Dynamical Systems: Modeling, Analysis and Control}
+      \field{isbn}{978-3-031-49555-7}
+      \field{title}{Layers Update of Neural Network Control via Event-Triggering Mechanism}
+      \field{year}{2024}
+      \field{pages}{253\bibrangedash 272}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1007/978-3-031-49555-7_11
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-031-49555-7_11
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-031-49555-7_11
+      \endverb
+    \endentry
+    \entry{sophie-book-saturation}{book}{}
+      \name{author}{4}{}{%
+        {{hash=e5f9cdc11709399f7eee68fdf047877e}{%
+           family={Tarbouriech},
+           familyi={T\bibinitperiod},
+           given={Sophie},
+           giveni={S\bibinitperiod}}}%
+        {{hash=1ffbbcbc8ecfc1da921153c415af2fff}{%
+           family={Garcia},
+           familyi={G\bibinitperiod},
+           given={Germain},
+           giveni={G\bibinitperiod}}}%
+        {{hash=489aa18ea526ff87f729ab83594b9d0a}{%
+           family={Silva\bibnamedelima Jr},
+           familyi={S\bibinitperiod\bibinitdelim J\bibinitperiod},
+           given={João\bibnamedelimb Manoel\bibnamedelima Gomes},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim G\bibinitperiod},
+           prefix={da},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=bfc7f981897ba70a6a70b4059d0bdc15}{%
+           family={Queinnec},
+           familyi={Q\bibinitperiod},
+           given={Isabelle},
+           giveni={I\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Science \& Business Media}%
+      }
+      \strng{namehash}{72df318ca58ae4c27c26eec0c5c4d189}
+      \strng{fullhash}{9caba290caa56bc865c1c87ce08e3607}
+      \strng{bibnamehash}{72df318ca58ae4c27c26eec0c5c4d189}
+      \strng{authorbibnamehash}{72df318ca58ae4c27c26eec0c5c4d189}
+      \strng{authornamehash}{72df318ca58ae4c27c26eec0c5c4d189}
+      \strng{authorfullhash}{9caba290caa56bc865c1c87ce08e3607}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Stability and stabilization of linear systems with saturating actuators}
+      \field{year}{2011}
+    \endentry
+    \entry{arcak-first}{article}{}
+      \name{author}{3}{}{%
+        {{hash=ced93c0ec5329c0766e637ca363225ae}{%
+           family={Yin},
+           familyi={Y\bibinitperiod},
+           given={He},
+           giveni={H\bibinitperiod}}}%
+        {{hash=f1e8d9d6b78ab558758402abd0b3743a}{%
+           family={Seiler},
+           familyi={S\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+        {{hash=e6c48880d8e90ef1332922d3b47d86d2}{%
+           family={Arcak},
+           familyi={A\bibinitperiod},
+           given={Murat},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \strng{fullhash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \strng{bibnamehash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \strng{authorbibnamehash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \strng{authornamehash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \strng{authorfullhash}{99dcf133a4c0d361ef8f5868fd8e44f5}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Automatic Control}
+      \field{number}{4}
+      \field{title}{Stability analysis using quadratic constraints for systems with neural network controllers}
+      \field{volume}{67}
+      \field{year}{2021}
+      \field{pages}{1980\bibrangedash 1987}
+      \range{pages}{8}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,77 @@
+\documentclass{article}
+\input{math_commands}
+\input{custom_imports}
+\usepackage[margin=54pt]{geometry}
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+
+
+\begin{document}
+
+\date{Theory recap}
+\author{Marco Sterlini}
+
+\title{Title}
+\maketitle
+
+\section*{First works}
+My contribution started by exploring the works \cite{css-paper} and \cite{css-extended}. The problem addressed is the design of an event-triggered control (ETC) for discrete-time linear-time-invariant (LTI) systems.
+The aim was to decrease the computational load that follows the application of non-linear activation functions inside the neural network (NN) controller. Also thanks to previous works \cite{sophie-book-saturation}, \cite{arcak-first}, \cite{iqc-intro} several tools to treat these non-linearities have been studied and applied allowing the use of classical stability analysis methods to highly non-linear NN controllers. Lyapunov theory will be used to guarantee the stability of the NN controlled plant.
+
+\subsection*{System under analysis}
+
+The feedback system under examination is the following:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/simple-etm}
+    \label{}
+\end{figure}
+
+The NN controller is called $\pi_{ETM}$, the plant to stabilize is $F$, and it is described by the dynamics:
+
+\begin{align*}
+    &x(k + 1) = A_{F} x(k) + B_{F} u(k)\\
+    \\
+    &\hat{\omega}^{0}(k) = x(k),\\
+    &\nu^{i}(k) = W^{i} \hat{\omega}^{i-1}(k) + b^{i},\ \ i \in \left\{ 1, \dots, l \right\},\\
+    &\omega^{i}(k) = \text{sat}(\nu^{i}(k)),\\
+    &u(k) = W^{l+1} \hat{\omega}^{l} (k) + b^{l+1}\\ 
+\end{align*}
+
+Where the first equation describes the plant $F$ as a discrete-time linear time-invariant system, the other equations describe the behavior of the NN controller: $\hat{\omega}^{i}$ and $\omega^{i}$ are respectively the last and current output of the $i^{th}$ layer, $\nu^{i}$ is the current input to the $i^{th}$ layer. The control input $u(k)$ is hence the output of the last layer of the NN, also the weights and the biases of the $i^{th}$ layer are indicated by $W^{i}$ and $b^{i}$. As per the activation function the saturation function was used and is defined by:
+$$
+   \text{sat}(\nu^{i}_{j}(k)) = \text{sign}(\nu^{i}_{j}(k)) min(|\nu^{i}_{j}(k)|, \bar{\nu}^{i}_{j})
+$$  
+For the $j^{th}$ neuron of the $i^{th}$ layer where $\bar{\nu}^{i}_{j}$ is the relative maximum limit value for the input signal. The activation function is applied element wise but a notation to isolate the non linearities is used:
+$$
+    \nu_{\phi} = \bmx{\nu^{1\tr}, \dots \nu^{l\tr}}\tr, \omega_{\phi} = \bmx{\omega^{1\tr}, \dots \omega^{l\tr}}\tr, \hat{\omega}_{\phi} = \bmx{\hat{\omega}^{1\tr}, \dots \hat{\omega}^{l\tr}}\tr \in \RR^{n_{\phi}}
+$$
+With $n_{\phi}$ the total number of neurons involved in the controller. It is then possible to express:
+$$
+    \text{sat}(v_{\phi}) = \bmx{\text{sat}(\nu^{1})\tr, \dots, \text{sat}(\nu^{l})\tr}\tr \in \RR^{n_{\phi}}
+$$
+The control input $u(k)$ and the input layers' vector $\nu_{\phi}$ can be expressed as a function of the state $x(k)$ and the last layers' output vector $\hat{\omega}_{\phi}(k)$
+
+\begin{equation}
+    \bmx{u(k)\\ \nu_{\phi}(k)} = \bmx{\begin{array}{c|cccc|c} 
+        \0 & \0 & \dots & \0 & W^{l+1} & b^{l+1}\\
+        \hline
+        W^{1} & \0 & \dots & \0 & \0 & b^{1}\\
+        \0 & W^{2} & \dots & \0 & \0 & b^{2}\\
+        \vdots & \vdots & \ddots & \vdots & \vdots & \vdots\\
+        \0 & \0 & \dots & W^{l} & \0 & b^{l}
+    \end{array}}  \bmx{x(k) \\ \hat{\omega}_{\phi}(k) \\ 1}
+\end{equation}
+
+$$
+    \bmx{u(k)\\ \nu_{\phi}(k)} = N  \bmx{x(k) \\ \hat{\omega}_{\phi}(k) \\ 1}\text{ and } N = \bmx{N_{ux} & N_{u \omega} & N_{ub} \\ N_{vx} & N_{v \omega} & N_{vb}}
+$$
+
+Then the equilibrium point $\left( x_{*}, u_{*}, \nu_{*}, \omega_{*} \right)$ is computed, 
+
+\pagebreak
+\printbibliography
+
+
+\end{document}
