@@ -2366,6 +2366,8 @@
     <bcf:citekey order="3" intorder="1">sophie-book-saturation</bcf:citekey>
     <bcf:citekey order="4" intorder="1">arcak-first</bcf:citekey>
     <bcf:citekey order="5" intorder="1">iqc-intro</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">css-paper</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">css-extended</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">
