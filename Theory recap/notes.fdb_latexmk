@@ -1,14 +1,14 @@
 # Fdb version 4
-["biber notes"] 1728577744.7483 "notes.bcf" "notes.bbl" "notes" 1728577747.43295 0
+["biber notes"] 1728577744.7483 "notes.bcf" "notes.bbl" "notes" 1728634878.78487 0
   "biblio.bib" 1728567328.56303 4885 1996808d0d6637a77df0508622de87f4 ""
-  "notes.bcf" 1728577747.32932 108166 c8545bfc7b9315c7917035700aa93dd0 "pdflatex"
+  "notes.bcf" 1728634878.66451 108166 c8545bfc7b9315c7917035700aa93dd0 "pdflatex"
   (generated)
   "notes.bbl"
   "notes.blg"
   (rewritten before read)
-["pdflatex"] 1728577746.06175 "/home/msterlini/Desktop/Notes/Theory recap/notes.tex" "notes.pdf" "notes" 1728577747.4334 0
+["pdflatex"] 1728634877.08566 "/home/msterlini/Desktop/Notes/Theory recap/notes.tex" "notes.pdf" "notes" 1728634878.78543 0
   "/etc/texmf/web2c/texmf.cnf" 1728482852.57268 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/msterlini/Desktop/Notes/Theory recap/notes.tex" 1728577743.12039 4198 305699747daf39f90a2a5eef782f8f6e ""
+  "/home/msterlini/Desktop/Notes/Theory recap/notes.tex" 1728634876.69953 4198 90e6f2632e1f1dfaa74544b69cf571e4 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -128,11 +128,11 @@
   "custom_imports.tex" 1728566207.41819 605 9b766d31e92a64d8f3b6ec5739579044 ""
   "img/simple-etm.png" 1728568750.55342 111109 2e88b703cdb5ea905e2727213d81cea5 ""
   "math_commands.tex" 1728576500.82903 3641 60783be240a329b3e7b9aa2e7712ab76 ""
-  "notes.aux" 1728577747.32732 1140 2018dfe0aa45cbc72d83c900f51d2120 "pdflatex"
+  "notes.aux" 1728634878.66251 1140 2018dfe0aa45cbc72d83c900f51d2120 "pdflatex"
   "notes.bbl" 1728577746.02834 11432 b4a9b07ba11883948c88b424241a0f15 "biber notes"
-  "notes.out" 1728577746.98932 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "notes.run.xml" 1728577747.33032 2308 7c2efbaa3e185a75ffcdbb9172767152 "pdflatex"
-  "notes.tex" 1728577743.12039 4198 305699747daf39f90a2a5eef782f8f6e ""
+  "notes.out" 1728634878.13152 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "notes.run.xml" 1728634878.66651 2308 7c2efbaa3e185a75ffcdbb9172767152 "pdflatex"
+  "notes.tex" 1728634876.69953 4198 90e6f2632e1f1dfaa74544b69cf571e4 ""
   (generated)
   "notes.aux"
   "notes.bcf"

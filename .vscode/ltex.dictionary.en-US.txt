@@ -1,0 +1,5 @@
+Sterlini
+NN
+non-linearities
+Lyapunov
+linearities
