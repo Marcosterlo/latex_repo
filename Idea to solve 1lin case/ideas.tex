@@ -1,0 +1,150 @@
+\documentclass{article}
+\input{math_commands}
+\input{custom_imports}
+\usepackage[margin=54pt]{geometry}
+\usepackage{biblatex}
+\addbibresource{biblio.bib}
+
+
+\begin{document}
+
+\date{}
+\author{Marco Sterlini}
+
+\title{Solve LMI with saturation 1 dimensional case}
+\maketitle
+
+To solve the LMI for the plant:
+
+\begin{equation}
+  \bmx{
+  \theta \\
+  \dot{\theta}
+  }^{+} = \bmx{
+  1 & \delta t\\
+  \frac{g}{l} dt & 1 - \frac{\mu}{m l^2} dt
+  } \bmx{
+  \theta \\
+  \dot{\theta}
+  } + \bmx{
+    0 \\
+    \frac{dt}{m l^2}
+  } u = A x + B u
+\end{equation}
+
+And a controller of the form:
+
+\begin{equation}
+  u = \text{sat}(-K x)
+\end{equation}
+
+With $K$ the result of a LQR optimization, we need to solve a LMI. Defining the incremental state $\tilde{x} = x - x_{*}$, and the Lyapunov function $V(x) = x \tr P x$ I can write the increment of the Lyapunov function as:
+
+\begin{multline}
+\Delta V = (\tilde{x}^{+})\tr P \tilde{x}^{+} - \tilde{x}\tr P \tilde{x} = 
+\left( A \tilde{x} + B \tilde{u} \right) \tr P ( \bullet )- \tilde{x}\tr P \tilde{x} = \\
+\left( A \tilde{x} + B \left( N_{u \omega} \omega \right)\right) \tr P \left( \bullet \right) - \tilde{x}\tr P \tilde{x} = \\
+\left( A \tilde{x} + B \left( \tilde{\nu} - \tilde{\psi} \right)\right) \tr P \left( \bullet \right) - \tilde{x}\tr P \tilde{x} = \\
+\left( (A - B K) \tilde{x} - B \tilde{\psi} \right) \tr P \left( \bullet \right) - \tilde{x}\tr P \tilde{x} \\
+\end{multline}
+
+In matrix form denoting $A_{k} = A - B K$:
+
+\begin{equation}
+  \Delta V = \bmx{\tilde{x} \\ \tilde{\psi}} \tr \bmx{
+    A_k\tr P A_k - P & -A_k\tr P B \\
+    -B\tr P A_k & B\tr P B
+  } \bmx{\tilde{x} \\ \tilde{\psi}}
+\end{equation}
+
+Using the same notation of \cite{css-extended} and \cite{css-paper} I can express the saturation involved in the controller as:
+
+\begin{equation}
+    \bmx{u\\ \nu} = \bmx{\begin{array}{c|c|c} 
+        0 & \Id & 0 \\
+        \hline
+        -K & 0 & 0
+    \end{array}}  \bmx{x \\ \omega \\ 1}
+\end{equation}
+
+And hence express the sector conditions of the saturation as:
+
+\begin{equation*}
+  \tilde{\psi}\tr T \left[ G \tilde{x} - \tilde{\nu} + \tilde{\psi} \right] \leq 0
+\end{equation*}
+
+\begin{equation}\label{sector}
+  \bmx{\tilde{x} \\ \tilde{\psi}}\tr \bmx{
+    0 & 0 & 0 \\
+    TG & -T & T
+  } \bmx{\tilde{x} \\ \tilde{\nu} \\ \tilde{\psi}} \leq 0 \to
+  \bmx{\tilde{x} \\ \tilde{\psi}}\tr \bmx{
+    0 & 0 & 0 \\
+    TG & -T & T
+  } \bmx{\Id & 0\\
+  -K & 0\\
+  0 & \Id} \bmx{\tilde{x} \\ \tilde{\psi}} \leq 0 \to \bmx{\tilde{x} \\ \tilde{\psi}}\tr M_{1} R_{\phi} \bmx{\tilde{x} \\ \tilde{\psi}}
+\end{equation}
+
+Given the sign definiteness of this quantity, I can bound $\Delta V$ as: 
+\begin{equation}\label{matricione}
+  \Delta V = \bmx{\tilde{x} \\ \tilde{\psi}}\tr \bmx{
+    A_k\tr P A_k - P & -A_k\tr P B \\
+    -B\tr P A_k & B\tr P B
+  } -\text{He}\left\{ M_1 R_{\phi} \right\} \bmx{\tilde{x}\\ \tilde{\psi}} \leq 0 \to \bmx{\tilde{x} \\ \tilde{\psi}}\tr M \bmx{\tilde{x} \\ \tilde{\psi}} \leq 0
+\end{equation}  
+
+Since the sector condition is not global I have to add the inclusion inside an ellipsoid to assure the local stability of the solution. I want $\tilde{x}\tr \alpha P \tilde{x} \leq 1$, from the sector condition definition, see set $\cS$ in \cite{css-extended} I have:
+
+$$
+  \cS = \left\{ x(k) \in \RR^{n_{p}} : -\bar{\nu} - \nu_* \leq G (x(k) - x_*) \leq \bar{\nu} - \nu_* \right\}
+$$
+
+Since $\nu_* = 0$ the condition directly translates into $|G \tilde{x}| \leq \bar{\nu} \to (G \tilde{x})\tr (G \tilde{x}) \leq \bar{\nu}^2 \to \tilde{x}\tr \frac{G\tr G}{\bar{\nu}^{2}} \tilde{x} \leq 1$ I want this condition to be included in the ellipsoid defined by $\cE(P, x_*) = \left\{ x \in \RR^{n_{F}}: \tilde{x}\tr \gamma P \tilde{x} \leq 1 \right\}$
+
+\begin{multline*}
+  \tilde{x}\tr \frac{G\tr G}{\bar{\nu}^{2}} \tilde{x} \leq \tilde{x}\tr \gamma P \tilde{x} \leq 1 \to \frac{G\tr G}{\bar{\nu}^{2}} \leq \gamma P \leq 1 \to \gamma P - \frac{G\tr G}{\bar{\nu}^{2}} \geq 0\\
+  0
+\end{multline*}
+
+It is now possible to apply Schur's complement, dividing everything by $\gamma$:
+
+\begin{equation}
+  P - \frac{G\tr G}{\gamma \bar{\nu}^{2}} \geq 0 \to \bmx{P & G\tr\\ G & \gamma \bar{\nu}^{2}} \geq 0
+\end{equation}
+
+Now by pre and post multiplying by $\bmx{\Id & 0\\ 0 & T}$:
+
+\begin{equation}\label{ellipsoid}
+  \bmx{P & G\tr T\\
+  TG & \gamma \bar{\nu}^{2} T^{2}} \geq 0
+\end{equation}
+
+Equation \ref{ellipsoid} is the last LMI condition to add. The problem arises due to the bilinear term $TG$ that appear also in equation \ref{sector}. The approach followed in \cite{css-extended} does not seem to be directly appliable to the one-dimensional case scenario even though it results to be compliant with a multi-layer network controller. New tricks have to be explored to solve this problem:
+
+\subsection*{Iterative approach}
+Set $G$ to nullify the cross term in matrix $M$ of equation \ref{matricione}. Solve for $P, T, \gamma$. Then set the found value of $T$ and solve for $P, G, \gamma$. Iterate until convergence to be established.
+
+From equation \ref{matricione} the hermitian of the sector conditions translate as:
+
+\begin{equation}
+  M_1 R_{\phi} + R_{\phi}\tr M_1\tr = \bmx{
+    0 & T(G\tr + K\tr)\\
+    T(G + K) & 2T
+  }  \to M = \bmx{
+    A_k\tr P A_k - P & -A_k\tr P B + T(G\tr + K\tr)\\
+    -B\tr P A_k + T(G + K) & B\tr P B + 2T
+  }
+\end{equation}
+
+I set $G = -K - T^{-1} B\tr P A_k$ to nullify the cross term and start the iteration.
+
+
+\subsection*{Scalar approach}
+Follow the approach used in paper \cite{isabelle-paper} to find out how they dealt with $\gamma \bar{\nu}^{2} = \tau$ with \texttt{fminsearch}
+
+\pagebreak
+\printbibliography
+
+
+\end{document}

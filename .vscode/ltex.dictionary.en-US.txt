@@ -3,3 +3,5 @@ NN
 non-linearities
 Lyapunov
 linearities
+LMI
+Schur
