@@ -8,3 +8,4 @@ Schur
 Samuele
 polytopic
 Arcak
+Automatica
