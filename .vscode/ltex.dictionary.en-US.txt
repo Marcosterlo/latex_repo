@@ -9,3 +9,4 @@ Samuele
 polytopic
 Arcak
 Automatica
+cvxpy

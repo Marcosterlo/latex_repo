@@ -27,9 +27,41 @@ Some sum ups can be found in the folders \textit{"Automatica paper discussion", 
 I tried to apply directly the proposition of Sophie's notes to the system portrayed in \cite{css-paper}. Everything is documented in the notes \textit{"Faulty implementation of dynamic ETM report"} in \textit{"extra material"} folder.
 
 \section*{Reproducing the results of the papers}
-At first, I tried t
+
+A first attempt into the implementation has been portrayed in Matlab and immediately after in Python. The most used modules were \texttt{cvxpy} as a framework for LMI resolution and \texttt{NumPy} for generic mathematical manipulation. 
+
+\subsection*{Linear Inverted Pendulum}
+The system used in \cite{css-paper} has been implemented in Python. The same weights used in the paper have been used to build up the NN controller. The main module exploited is \texttt{PyTorch}, the activation functions used are saturations. Tweaking the LMI conditions I was able to obtain the same results of the paper with the same basins of attraction.
+The main concern about the approach followed in the paper regards the ETM mechanism design:
+$$
+  \hat{\omega}^{i}(k) = \begin{cases}
+    \omega^{i}(k) & \text{if } f^{i}(\omega^{i}(k), \hat{\omega}^{i}(k-1), \hat{\omega}^{i-1}(k)) \geq 0\\
+    \hat{\omega}^{i}(k-1) & \text{otherwise}  
+  \end{cases}
+$$
+Where 
+$$ 
+f^{i}(\omega^{i}(k), \hat{\omega}^{i}(k-1), \hat{\omega}^{i-1}(k)) = ||\hat{\omega}^{i}(k-1) - \omega^{i}(k)||^{2}_{q^{i}_{\Delta}} - ||\omega^{i}(k) - \omega^{i}_*||^{2}_{q^{i}_{\omega}} - ||\hat{\omega}^{i-1}(k) - \omega^{i-1}_*||^{2}_{q^{i-1}_{\hat{\omega}}}
+$$
+The good thing about this function is the capability to stop early the computation and avoid computing the remaining layer if one doesn't trigger. However, this capability looses meaning when applied to a 2 layer NN controller. The bad point lies instead in the term $\omega^{i}(k) = sat(\nu^{i}(k))$ that is required at each layer verification. The need to compute this term, hence computing the activation function, makes the ETM useless if not for the cascade effect that remains good but not enough to be worth the computational load.
+
+Nevertheless, I was able to reproduce the results for the static ETM, and I was able to extend the problem to a dynamic ETM inspired by the work of \cite{data-driven}.
 
 \section*{Adding the conditions for dynamic ETM}
+The main logic was to update the data used to compute the new input to the system only when necessary:
+$$
+  \pmx{\chi \\ s} = \begin{cases}
+    \pmx{\omega\\ k} & \text{if the memory is updated}\\ 
+    \pmx{\chi_{k-1} \\ s_{k-1}} & \text{otherwise}
+  \end{cases}
+$$
+
+With the ETM mechanism described as follow:
+
+$$
+s^{+} = \text{min}_{m \in \NN} \left\{ m \geq s + 1 | \psi(\omega_m, \chi) \geq \rho \eta_m \right\}
+$$
+
 
 \section*{Problem in the extension to custom trained NN controllers}
 
@@ -51,8 +83,8 @@ At first, I tried t
 
 
 
-
 \pagebreak
+\emergencystretch=2em % To account for hbox overflow warning
 \printbibliography
 
 \end{document}
