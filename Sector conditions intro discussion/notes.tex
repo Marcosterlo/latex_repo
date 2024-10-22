@@ -1,0 +1,183 @@
+\documentclass[12pt]{article}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% \setlength{\parindent}{0pt}
+
+\begin{document}
+
+\date{}
+\author{Marco Sterlini}
+
+\title{Notes on Sector condition study}
+\maketitle
+
+Sector conditions are used to handle non-linearity in linear systems (activation functions in my case). From the book of Sophie I will take the basic concepts, firstly referred to the Dead-zone non-linearity and then proceeding to the general case. 
+
+Defining the Dead-zone non-linearity:
+
+\begin{equation} \label{non-l}
+  \phi(v(t)) = sat(v(t)) - v(t) = \begin{cases}
+    u_{max(i)} - v_{(i)} & \text{if } v_{(i)} > u_{max(i)}\\
+    0 & \text{if } -u_{min(i)} \leq v_{(i)} \leq u_{max(i)}\\
+    -u_{min(i)} - v_{(i)} & \text{if }  v_{(i)} < -u_{min(i)}
+  \end{cases}
+\end{equation}
+
+With this non-linearity it's possible to explicit the global sector conditions:
+
+\textbf{Lemma 1} \textit{For all $v \in \mathbb{R}^n$, the non-linearity $\phi(v)$ satisfies the following inequality:}
+\begin{equation} \label{global-quad}
+  \phi(v)^{\top} T \left( \phi(v) + v \right) \leq 0
+\end{equation}
+\textit{for any diagonal positive matrix $T \in \mathbb{R}^{n \times n}$}
+
+\textit{Proof} the sign of \ref{global-quad} will be discussed
+\begin{itemize}
+  \item If $v > u_{max}$ we have $\phi(v) < 0$ and $\phi(v) + v = u_{max} > 0$ hence we have the overall product $< 0$
+  \item if $v < - u_{min}$ we have $\phi(v) > 0$ and $\phi(v) + v = -u_{min} < 0$ hence we have the overall product $< 0$
+  \item if $-u_{min} < v < u_{max}$ we have $\phi(v) = 0$ hence the product will always be $0$
+\end{itemize}
+This proves that the product is always $\leq 0$
+
+The general form refers to the elements inside the set:
+\begin{equation} \label{s-cond}
+  S(v - \omega, u_{min}, u_{max}) = \left\{ v \in \mathbb{R}^n ; \omega \in \mathbb{R}^n; - u_{min} \leq v - \omega \leq u_{max} \right\}
+\end{equation}
+Then the following inequality is satisfied $\forall T \in \mathbb{R}^{n \times n}$ diagonal positive definite
+\begin{equation} \label{sec-cond-0-1j}
+  \phi(v)^{\top} T \left( \phi(v) + \omega \right) \leq 0
+\end{equation}
+
+\textit{Proof} By exploiting condition \ref{s-cond} the proof is analogous.
+
+It is a powerful expression since we can substitute $v$ with other expressions like for example the feedback law $v(t) = K x(t)$ with a dynamic like $\dot x = A x + B \text{ sat}(K x) = (A + BK) x + B \phi(K x(t))$ with $\phi(K x) = \text{sat} (K x) - Kx$ obtaining something like
+$$
+  \phi(Kx)^{\top} T \left( \phi(Kx) + Gx \right) \leq 0
+$$
+For every $x$ in the polyhedral set:
+$$
+S(K - G, u_{min}, u_{max}) = \left\{ x \in \mathbb{R}^n; -u_{min} \leq \left( K - G \right) x \leq u_{max}\right\}
+$$
+
+Like already seen for the global sector condition with $S, T, R$ these conditions are useful to inject into the discussion of the Lyapunov function incremental sign since it's a term whose sign is always defined. Doing so we take into account the non-linearity of the system, and we can proceed with the LMI formulation.
+$$
+  V(x) = x^{\top} P x, P = P^{\top} > 0
+$$
+\begin{equation} \label{lyap-cond}
+  \dot V (x) \leq \dot V (x) - 2 \phi(K x)^{\top} T (\phi(K x) + G x) \forall x \in \mathcal{E}(P, 1)
+\end{equation}
+Note that $\mathcal{E}(P, 1)$ refers to an ellipsoid that is the current region of asymptotic stability (RAS). It is included in the LMI problem via a condition similar to this:
+\begin{equation}
+  \begin{bmatrix}
+    W & W K^{\top} - Z^{\top}\\
+    \star & u_{0}^2
+  \end{bmatrix} \geq 0
+\end{equation}
+With $ P = W^{-1}, Z = GW, S = T^{-1}$. Usually we pre multiply and post multiply equation \ref{lyap-cond} by $\begin{bmatrix}
+  P^{-1} & 0\\
+  0 & T^{-1}
+\end{bmatrix}$, and we change the variables we obtain something like this
+$$
+  \left[ x^{\top} \phi(K x)^{\top} \right] \begin{bmatrix}
+    W(A + BK)^{\top} + (A + BK) W & BS-WK^{\top} - Z^{\top}\\
+    \star & - 2S
+  \end{bmatrix} \begin{bmatrix}
+    x\\
+    \phi(Kx)
+  \end{bmatrix} < 0
+$$
+
+\section*{Arcak paper discussion}
+The local sector constraints are considered with the offset to the equilibrium points $(\nu_*, \phi(\nu_*))$ for each single activation function:
+
+Let $\alpha_{\phi}, \beta_{\phi}, \underline{\nu}, \overline{\nu}, \nu_* \in \mathbb{R}^{n_{\phi}}$ be given with $\alpha_{\phi} \leq \beta_{\phi}$, $\underline{\nu} \leq \nu_* \leq \overline{\nu}$, $\omega_* := \phi(\nu_*)$. Assuming $\phi$ satisfies the offset local sector $\left[ \alpha_{\phi}, \beta_{\phi} \right]$ around $(\nu_*, \omega_*)$ element wise for all $\nu_{\phi} \in [\underline{\nu}, \overline{\nu}]$. If $\lambda \in \mathbb{R}^{n_{\phi}}$ with $\lambda \geq 0$ then:
+\begin{equation}
+  \begin{bmatrix}
+    \nu_{\phi} - \nu_*\\
+    \omega_{\phi} - \omega_*
+  \end{bmatrix}^{\top} \Psi_{\phi}^{\top} M_{\phi}(\lambda) \Psi_{\phi} \begin{bmatrix}
+    \nu_{\phi} - \nu_*\\
+    \omega_{\phi} - \omega_*
+  \end{bmatrix} \geq 0\ \ \forall \nu_{\phi} \in [\underline{\nu}, \overline{\nu}],\ \omega_{\phi} = \phi(\nu_{\phi})
+\end{equation}
+
+where
+$$
+\Psi_{\phi} := \begin{bmatrix}
+  \textit{diag}(\beta_{\phi}) & - I_{\phi}\\
+  - \textit{diag}(\alpha_{\phi}) & I_{\phi}
+\end{bmatrix}
+$$
+and
+$$
+M_{\phi} (\lambda) := \begin{bmatrix}
+  0_{n_{\phi}} & \textit{diag} (\lambda)\\
+  \textit{diag} (\lambda) &  0_{n_{\phi}}
+\end{bmatrix}
+$$
+
+By putting into explicit form this product we obtain:
+$$
+  \sum_{i=1}^{n_{\phi}} \lambda_i \left( \Delta \omega_i - \alpha_i \Delta \nu_i \right) \cdot \left( \beta_i \Delta \nu_i - \Delta \omega_i \right)
+$$
+Which is the offset local sector condition applied for each activation function in the NN.
+
+Another interesting thing is the computation of vectors $\underline{\nu}, \overline{\nu}$. Essentially we choose $\underline{\nu}^1, \overline{\nu}^1$ with $\nu_*$ in between. Then we compute $[\underline{\omega}^1, \overline{\omega}^1]$ from the output of $\omega^1 = \phi^1(\nu^1)$ that can be used to compute the bounds $\underline{\nu}^2, \overline{\nu}^2$ and so on. To sum up everything is dependent on the initial choice of $\underline{\nu}^1, \overline{\nu}^1$. This is important for the later estimation of the ROA: decreasing $(\overline{\nu}^1 - \nu_*^1)$ if beneficial for the ROA estimation but restricts the region where ROA inner approximations lie. The opposite if we increase $\left( \overline{\nu}^1 - \nu_*^1 \right)$, it has been chosen to parametrize as $\delta$ this quantity and choose $\delta$ that leads to the larges inner approximation.
+
+\section*{Static ETM paper discussion}
+
+\section*{Appendix}
+\begin{itemize}
+  \item Lipschitz constant of NN: specifies how much the output of the network can change with respect to changes in the input. It is Lipschitz continuous if $\exists L \geq 0$ such that $\forall x_1, x_2$:
+  $$
+    || f(x_1) - f(x_2)|| \leq L || x_1 - x_2||
+  $$
+  \item General global sector condition: Let $\alpha \leq \beta$, the function $\phi : \mathbb{R} \to \mathbb{R}$ lies in the global sector $[\alpha, \beta]$ if:
+  $$
+    (\phi(\nu) - \alpha \nu) \cdot (\beta \nu - \phi(\nu)) \geq 0\ \ \forall \nu \in \mathbb{R}
+  $$
+  Note how this condition can be brought back to  eq\ref{sec-cond-0-1j} that is the sector condition $[0, -1]$ by imposing $\alpha = 0, \beta = -1$:
+  $$
+    \phi(\nu) \cdot (-\nu - \phi(\nu)) \geq 0 \to \phi(\nu) \cdot (\nu + \phi(\nu)) \leq 0
+  $$
+  For the one dimensional case, brought to multidimensional case with $T$ diagonal and positive definite
+  \item Offset local sector: Let $\alpha, \beta, \underline{\nu}, \overline{\nu}, \nu_*$ be given with $\alpha \leq \beta$ and $\underline{\nu} \leq \nu_* \leq \overline{\nu}$. The function $\phi : \mathbb{R} \to \mathbb{R}$ satisfies the offset local sector $[\alpha, \beta]$ around the point $\left( \nu_*, \phi(\nu_*) \right)$ if 
+  $$
+    \left( \Delta \phi(\nu) - \alpha \Delta \nu \right) \cdot \left( \beta \Delta \nu - \Delta \phi(\nu) \right) \geq 0\ \ \forall \nu \in [\underline{\nu}, \overline{\nu}]
+  $$
+  where $\Delta \phi(\nu) := \phi(\nu) - \phi(\nu_*)$ and $\Delta \nu := \nu - \nu_*$
+\end{itemize}
+
+
+
+\end{document}
+
+% \begin{figure}[H]
+%     \centering
+%     \begin{subfigure}{0.4\textwidth}
+%     \includegraphics[width=\textwidth]{}
+%     \caption{}
+%     \label{}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}{0.55\textwidth}
+%     \includegraphics[width=\textwidth]{}
+%     \caption{}
+%     \label{}
+%     \end{subfigure}
+%     \caption{}
+%     \label{}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.65\textwidth]{}
+%     \caption{}
+%     \label{}
+% \end{figure}

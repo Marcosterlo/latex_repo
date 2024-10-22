@@ -1,2 +1,3 @@
 {"rule":"DID_FOUND_AMBIGUOUS","sentence":"^\\QGiven the sign definiteness of this quantity, I can bound \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q as:\\E$"}
 {"rule":"DID_FOUND_AMBIGUOUS","sentence":"^\\QGiven the sign definiteness of this quantity, I can bound \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q as: \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QHe \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"IF_IS","sentence":"^\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q if \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q if \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q if \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}

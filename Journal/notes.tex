@@ -1,0 +1,54 @@
+\documentclass{article}
+\input{../math_commands}
+\input{../custom_imports}
+\usepackage[margin=54pt]{geometry}
+\usepackage{biblatex}
+\addbibresource{../biblio.bib}
+
+
+\begin{document}
+
+\date{}
+\author{Marco Sterlini}
+
+\title{Journal}
+\maketitle
+
+Ordered list of problems and steps taken to solve them, or at least to understand them better.
+
+\section*{Initial works}
+
+The first weeks were spent understanding the papers and the Matlab code given by Sophie (\cite{automatica}, \cite{css-paper}, \cite{data-driven}) regarding the application of ETM to the NN controller of a linearized and non linearized pendulum. The aim is to save as much computational load as possible by putting ETM in between the layers. Doing so it is possible to decide whether propagating the current layer output to the activation function. 
+The main computational save will regard directly the application of the activation function that, being non-linear, is the most expensive operation in the network.
+
+\subsection*{Faulty application of global sector conditions}
+
+\section*{Reproducing the results of the papers}
+
+\section*{Adding the conditions for dynamic ETM}
+
+\section*{Problem in the extension to custom trained NN controllers}
+
+\section*{Idea to use Samuele's results to address robustness of a NN controlled system with integrator in DT}
+
+\section*{Development of new controllers}
+
+\subsection*{Reinforcement learning approach}
+
+\subsection*{Deep learning approach of LQR controller} 
+
+\section*{Problems in the addition of system non-linearities} 
+
+\subsection*{Progressive simplification of the problem to understand the issue}
+
+\subsection*{1 layer saturation controller to linear pendulum}
+
+\subsection*{1 layer saturation controller to linear pendulum with integrator in the state}
+
+
+
+
+\pagebreak
+\printbibliography
+
+\end{document}

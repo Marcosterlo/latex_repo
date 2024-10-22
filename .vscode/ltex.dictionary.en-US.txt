@@ -5,3 +5,6 @@ Lyapunov
 linearities
 LMI
 Schur
+Samuele
+polytopic
+Arcak

@@ -1,9 +1,9 @@
 \documentclass{article}
-\input{math_commands}
-\input{custom_imports}
+\input{../math_commands}
+\input{../custom_imports}
 \usepackage[margin=54pt]{geometry}
 \usepackage{biblatex}
-\addbibresource{biblio.bib}
+\addbibresource{../biblio.bib}
 
 
 \begin{document}
@@ -139,9 +139,96 @@ From equation \ref{matricione} the hermitian of the sector conditions translate 
 
 I set $G = -K - T^{-1} B\tr P A_k$ to nullify the cross term and start the iteration.
 
+The ellipsoid condition without bilinear terms is:
+
+\begin{equation}
+  \bmx{
+    P & G\tr \\
+    G & \gamma \bar{\nu}^{2}
+  } \geq 0
+\end{equation}
+
+The problem that arises now is that imposing $G = -K - T^{-1} B\tr P A_k$ results in a bilinear condition since we have both $T^{-1}$ and $P$
 
 \subsection*{Scalar approach}
+
 Follow the approach used in paper \cite{isabelle-paper} to find out how they dealt with $\gamma \bar{\nu}^{2} = \tau$ with \texttt{fminsearch}
+
+\textbf{Paper analysis}: \dots Interrupted immediately since I found a value for $\alpha$ with respect to equation \ref{ellipsoid} and paper \cite{css-extended}: $\alpha = 1$\dots
+
+\section*{Pendulum with integrator}
+Since I found the solution for the LMI for the case without integrator, I can now try to solve the case with integrator. The plant is now:
+
+\begin{equation}
+  \bmx{
+  \theta \\
+  \dot{\theta} \\
+  \eta
+  }^{+} = \bmx{
+  1 & \delta t & 0\\
+  \frac{g}{l} dt & 1 - \frac{\mu}{m l^2} dt & 0\\
+  1 & 0 & 1
+  } \bmx{
+  \theta \\
+  \dot{\theta} \\
+  \eta
+  } + \bmx{
+    0 \\
+    \frac{dt}{m l^2} \\
+    0
+  } u = A x + B u
+\end{equation}
+
+Following analogous considerations I end up with a condition formally identical as in equation. \ref{matricione}. The only difference is that the dimensions of the matrices that now are scaled accordingly and the gain matrix $K$ that is now the proper LQR gain for the new system with integrator. I set up the ellipsoid condition as in equation \ref{ellipsoid} with $\gamma = 1$. Introducing the variable $Z = TG$ and exploiting the result from:
+
+$$
+  \left[ \bar{\nu}^{-2} - T \right] \bar{\nu}^{2} \left[ \bar{\nu}^{-2} - T \right] \geq 0 \to \bar{\nu}^{-2} - T - T + \bar{\nu}^{2} T^{2} \geq 0 \to \bar{\nu}^{2} T^{2} \geq 2 T - \bar{\nu}^{-2}
+$$
+
+Equation. \ref{ellipsoid} becomes:
+
+\begin{equation}
+  \bmx{
+    P & Z\tr \\
+    Z & 2 T - \bar{\nu}^{-2} 
+  } \geq 0
+\end{equation}
+
+That guarantees the validity in a local region of the state space. Specifically the region defined by the ellipsoid $\cE(P, x_*) = \left\{ x \in \RR^{n_{F}} : (x - x_*)\tr P (x - x_*) \leq 1 \right\}$ that is represented in the following plots.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/red_state_out}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/lyap_out}
+    \end{subfigure}
+    \caption{Initial state out of ROA, the system is still able to reach the origin but the Lyapunov function is not strictly decreasing}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/red_state_inside}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{img/lyap_inside}
+    \end{subfigure}
+    \caption{Initial state inside the ROA, the system is able to reach the origin and the Lyapunov function is strictly decreasing}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/detail_lyap}
+    \caption{Detail of the Lyapunov function in the case the initial state is inside the ROA}
+\end{figure}
+
+\subsection*{Next steps}
+Now the following steps regard the extraction of the "region of linearity" from this trivial 1 layer case and extend it iteratively to craft a multi-layer network controller by hand.
 
 \pagebreak
 \printbibliography
