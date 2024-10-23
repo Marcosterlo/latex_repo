@@ -56,12 +56,20 @@ $$
   \end{cases}
 $$
 
-With the ETM mechanism described as follow:
+With the ETM mechanism described as follows:
 
 $$
 s^{+} = \text{min}_{m \in \NN} \left\{ m \geq s + 1 | \psi(\omega_m, \chi) \geq \rho \eta_m \right\}
 $$
 
+And $\eta$ dynamic is defined as:
+
+$$
+  \eta^{+} = (\rho + \lambda) \eta - \psi(\omega_m, \chi)
+$$
+
+This formulation ensures $\eta$ to be always positive and made it possible to consider it as a positive system like in \cite{positive-systems}. 
+As a quick proof I can say that if the triggering condition $\psi$ is negative then the positiveness of $\eta$ is trivial. If instead $\psi$ is positive and $\psi \geq \rho \eta $
 
 \section*{Problem in the extension to custom trained NN controllers}
 
@@ -79,9 +87,89 @@ $$
 
 \subsection*{1 layer saturation controller to linear pendulum}
 
+It works by putting $\alpha = 1$
+
 \subsection*{1 layer saturation controller to linear pendulum with integrator in the state}
 
+It works by putting $\alpha = 1$
 
+\subsection*{Attempt on handcrafting NN}
+Considerations on it can be found in the last subsection of \textit{"Linear integrator 1 dimension case"}.
+I am now trying to train a 3-layer NN with deep learning method on a K matrix found with LQR method and not pole placement. It will then be attempted to:
+\begin{itemize}
+  \item Find a LMI solution for the system with integrator and non-linearity for the 3 layer network. If it doesn't work simplify the problem and add complexity bit by bit
+  \item Test the K gain from LQR method to non-linear system with and without saturation
+  \item Find the LMI solution for the non-linear system with input saturation: $u = sat(K_{LQR} \cdot x)$
+\end{itemize}
+
+\subsection*{1 layer saturation controller to non-linear pendulum with integrator in the state}
+The system under analysis is represented by the dynamic:
+
+$$
+m l^{2} \ddot{\theta} = m g l\ sin(\theta) - \mu \dot{\theta} + u
+$$
+
+That discretized becomes:
+
+$$
+  \begin{cases}
+    \theta^{+} = \theta + \dot{\theta} \delta t\\
+    \dot{\theta}^{+} = \dot{\theta} + \ddot{\theta} \delta t = \dot{\theta} + (\frac{g}{l} sin(\theta) - \frac{\mu}{m l^{2}} \dot{\theta}) \delta t + \frac{dt}{m l^{2} u} \\
+    \eta^{+} = \eta + y = \eta + (\theta - r)
+  \end{cases}
+$$
+
+I want to deal with the non-linearity in the form of $sin(\theta) - \theta$. In order to do so, I add and subtract the term $\frac{g}{l} \cdot dt \cdot \theta$ to $\dot{\theta}$ dynamics. Then by expressing $\phi(\theta) = sin(\theta) - \theta$ I can rewrite the overall dynamics as:
+
+\begin{equation}
+  \bmx{
+    \theta^{+} \\
+    \dot{\theta}^{+} \\
+    \eta^{+}
+  } = \bmx{
+    1 & \delta t & 0 \\
+    \frac{g \cdot dt}{l} & 1 - \frac{\mu \cdot dt}{m l^{2}} & 0 \\
+    1 & 0 & 1
+  } \bmx{
+    \theta \\
+    \dot{\theta} \\
+    \eta
+  } + \bmx{
+    0 \\
+    \frac{dt}{m l^{2}} \\
+    0
+  } u + \bmx{
+    0 \\
+    \frac{g \cdot dt}{l} \\
+    0 
+  } \phi 
+\end{equation}
+
+With more condensed notation:
+$$
+  x^{+} = A x + B u + C \phi
+$$
+
+The sector conditions on the saturation are the same of \cite{css-extended} adapted for the single saturation case:
+$$
+N = \bmx{
+\begin{array}{c|c|c}
+  0 & 1 & 0 \\
+  \hline
+  K & 0 & 0
+\end{array}
+}
+$$
+
+Each element is null except for $N_{u \omega} = 1$ and $N_{\nu x} = K$ so to have:
+\begin{align*}
+  \nu &= N_{\nu x} \cdot x + N_{\nu \omega} \cdot \omega + N_{\nu b} = K x\\
+  u &= N_{ux} \cdot x + N_{u \omega} \cdot \omega + N_{u b} = \omega = sat(\nu)
+\end{align*}
+
+In the end the control input is $u = sat(\nu) = sat(K x)$
+
+I consider a quadratic Lyapunov function $V = \tilde{x}\tr P \tilde{x}$ and I want to bound $\Delta V$ to be strictly negative.
 
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning

@@ -230,6 +230,48 @@ That guarantees the validity in a local region of the state space. Specifically 
 \subsection*{Next steps}
 Now the following steps regard the extraction of the "region of linearity" from this trivial 1 layer case and extend it iteratively to craft a multi-layer network controller by hand.
 
+We have explored some way to craft it. The problem lies in the dimensionality of the matrices, given the feasibility of the 1 dimensional case:
+
+$$
+  u = sat(Kx)
+$$
+
+We wanted to extend the problem to an $l$ layer controller by designing something like:
+
+$$
+  u = sat_1 \left( W_1 \left( sat_0 \left( W_0 x \right) \right) \right)
+$$
+
+Such that, staying in the linear zone of the saturation, we have $u = W_1 W_0 x = K x$ and to design something like $W_1 = k W_0^{-1}$ with $W_0$ and $W_1$ to be defined. Furthermore, we have to ensure that after the first layer we keep staying inside the linearity region. To do so we have to force something like this:
+
+$$
+  -\bar{\nu}_i \leq W_i \nu \leq \bar{\nu}_i
+$$
+
+For each layer, this directly translates to the inclusion of vector $\nu$ to the following set: \\ $ S_i = \left\{ \nu \in \RR^{n_{\phi}} : \nu\tr W_i\tr W_i \nu < \bar{\nu}^{2} \right\}$
+Then we can express the ellipsoid conditions:
+
+$$
+  \nu\tr \frac{W_i\tr W_i}{\bar{\nu}^{2}} \nu \leq 1
+$$
+
+Since we want the inclusion of one linearity zone into the following we impose for every layer:
+
+$$
+  \nu\tr \frac{W_{i-1}\tr W_{i-1}}{\bar{\nu}_{i-1}^{2}} \nu \geq \nu\tr \frac{W_{i}\tr W_{i}}{\bar{\nu}_{i}^{2}} \to W_{i-1}\tr W_{i-1} - W_{i}\tr W_{i} \frac{\bar{\nu}_{i-1}^{2}}{\bar{\nu}_{i}^{2}} \geq 0
+$$
+
+Applying Schur's complement:
+
+$$
+  \bmx{
+    W_{i-1}\tr W_{i-1} & W_{i}\tr \\
+    W_{i} & \frac{\bar{\nu}_{i}^{2}}{\bar{\nu}_{i-1}^{2}} \Id
+  } \geq 0
+$$
+
+Everything seems to be fine by fixing $\bar{\nu}_0$ equal to the actuator saturation level, but the problem lies in the dimensionality of the matrices $W_i$ since we need their inverse to compute the matrix for the following layer and to be invertible they need to be square. This enforces a strong limit on the architecture of the network since it forces to have the dimension of the input, the state, equal to the number of each hidden layer and also to the dimension of the output. Hence, this method is not applicable to the general case of a multi-layer network controller.
+
 \pagebreak
 \printbibliography
 
