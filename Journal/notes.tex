@@ -170,6 +170,232 @@ Each element is null except for $N_{u \omega} = 1$ and $N_{\nu x} = K$ so to hav
 In the end the control input is $u = sat(\nu) = sat(K x)$
 
 I consider a quadratic Lyapunov function $V = \tilde{x}\tr P \tilde{x}$ and I want to bound $\Delta V$ to be strictly negative.
+Expressing $\tilde{x}_*^{+}$ in a compact way:
+
+$$
+  \tilde{x}^{+} = A x + B u + C \phi - A x_* - B u_* - C \phi_* = A \tilde{x} + B \tilde{u} + C \tilde{\phi}
+$$
+
+In this expression $\tilde{u}$ can be expressed with respect to $\omega$ and $x$:
+$$
+  \tilde{u} = N_{ux} x + N_{u \omega} + N_{ub} - N_{ux} x_* - N_{u \omega} \omega_* - N_{ub} = N_{ux} \tilde{x} + N_{u \omega} \tilde{\omega}
+$$
+
+I consider now the change of variables $\psi = \nu - \omega$ to make the problem compliant with the sector conditions used in \cite{css-extended}:
+
+\begin{align*}
+  \tilde{\nu} &= R N_{\nu x} \tilde{x} \\
+  \tilde{u} &= N_{ux} \tilde{x} + N_{u \omega} (\tilde{\nu} - \tilde{\psi}) = N_{ux} \tilde{x} + N_{u \omega} R N_{\nu x} \tilde{x} - N_{u \omega} \tilde{\psi} = (N_{ux} + N_{u \omega} R N_{\nu x}) \tilde{x} - N_{u \omega} \tilde{\psi} = R_{\omega} \tilde{x} - N_{u \omega} \tilde{\psi} \\
+  \tilde{x}^{+} &= (A + B R_{\omega}) \tilde{x} - B N_{u \omega} \tilde{\psi} + C \tilde{\phi} = \bar{A} \tilde{x} + \bar{B} \tilde{\psi} + C \tilde{\phi}
+\end{align*}
+
+With \begin{itemize}
+  \item $R = \left( \Id - N_{\nu \omega} \right)^{-1}$
+  \item $R_{\omega} = N_{ux} + N_{u \omega} R N_{\nu x}$
+  \item $\bar{A} = A + B R_{\omega}$
+  \item $\bar{B} = - B N_{u \omega}$
+\end{itemize}
+
+I can express then:
+
+\begin{align*}
+  \Delta V &= (\tilde{x}^{+})\tr P \tilde{x}^{+} - \tilde{x}\tr P \tilde{x} = \left( \bar{A} \tilde{x} + \bar{B} \tilde{\psi} + C \tilde{\phi} \right)\tr P \left( \bar{A} \tilde{x} + \bar{B} \tilde{\psi} + C \tilde{\phi} \right) - \tilde{x}\tr P \tilde{x} = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \bmx{
+    \bar{A}\tr P \bar{A} - P & \bar{A}\tr P \bar{B} & \bar{A}\tr P C \\
+    \bar{B}\tr P \bar{A} & \bar{B}\tr P \bar{B} & \bar{B}\tr P C \\
+    C\tr P \bar{A} & C\tr P \bar{B} & C\tr P C
+  } \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }
+\end{align*}
+
+I have to include now the sector conditions to deal with the non-linearity of the activation functions of the NN controller. In this particular case we deal with only one saturation function. Following the approach in \cite{css-extended} I can express the sector condition as:
+
+$$
+  \tilde{\psi}\tr T \left[ G \tilde{x} - \tilde{\nu} + \tilde{\psi} \right] \leq 0 \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr \bmx{
+    0 & 0 & 0 & 0 \\
+    TG & -T & T & 0 \\
+    0 & 0 & 0 & 0
+  } \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\nu} \\
+    \tilde{\phi}
+  } \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr \bmx{
+    0 & 0 & 0 & 0 \\
+    TG & -T & T & 0 \\
+    0 & 0 & 0 & 0
+  } \bmx{
+    \Id & 0 & 0 \\
+    R N_{\nu x} & \Id - R & 0 \\
+    0 & \Id & 0  \\
+    0 & 0 & \Id
+  } \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }
+$$
+
+Having written $\tilde{\nu} = N_{\nu x} \tilde{x} + N_{\nu \omega} \tilde{\omega} = N_{\nu x} \tilde{x} + N_{\nu \omega} (\tilde{\nu} - \tilde{\psi}) \to (\Id - N_{\nu \omega}) \tilde{\nu} = N_{\nu x} \tilde{x} - N_{\nu \pi} \tilde{\psi} \to \tilde{\nu} = R N_{\nu x} \tilde{x} + (\Id - R) \tilde{\psi}$ 
+Exploiting the condition $N_{\nu \omega} = \Id - R^{-1} \to -R N_{\nu \omega} = \Id - R$
+
+I can rewrite the sector conditions as:
+
+\begin{align*}
+  \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr M_{1} R_{\phi} \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } \leq 0
+\end{align*}
+
+Given their sign definiteness I can subtract the term to $\Delta V$ in order to impose a negative bound to the Lyapunov function derivative:
+
+$$
+  \Delta V \leq \Delta V - He \left\{\bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } M_{1} R_{\phi} \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\right\} < 0
+$$
+
+Finally, I include the sector condition for the non-linearity $\phi = sin(\theta) - \theta$. The sector used is the following that is valid for $\theta \in \left[ -\pi, \pi \right]$:
+
+\begin{align*}
+  & \bmx{
+    \tilde{\theta} \\
+    sin(\tilde{\theta}) - \tilde{\theta}
+  }\tr \bmx{
+    0 & -1 \\
+    -1 & -2
+  } \bmx{
+    \tilde{\theta} \\
+    sin(\tilde{\theta}) - \tilde{\theta}
+  } \geq 0 \to \\
+  & \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr \bmx{
+    1 & 0 & 0 & 0_{1 \times n_{\phi}} & 0 \\
+    & 0_{1 \times n_{x}} & & 0_{1 \times n_{\phi}} & 1
+  }\tr \bmx{
+    0 & -1 \\
+    -1 & -2
+  } \bmx{
+    1 & 0 & 0 & 0_{1 \times n_{\phi}} & 0 \\
+    & 0_{1 \times n_{x}} & & 0_{1 \times n_{\phi}} & 1
+  } \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } > 0 \to \\
+  & \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr R_{q}\tr \bmx{
+    0 & -1 \\
+    -1 & -2
+  } R_{q} \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } > 0
+\end{align*}
+
+I add this sector condition to $\Delta V$:
+
+\begin{align*}
+  \Delta V &\leq \Delta V - He \left\{\bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } M_{1} R_{\phi} \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\right\} + \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } R_{q}\tr \bmx{
+    0 & -1 \\
+    -1 & -2
+  } R_{q} \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } < 0 \to \\
+  & \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr
+  \left( \bmx{
+    \bar{A}\tr P \bar{A} - P & \bar{A}\tr P \bar{B} & \bar{A}\tr P C \\
+    \bar{B}\tr P \bar{A} & \bar{B}\tr P \bar{B} & \bar{B}\tr P C \\
+    C\tr P \bar{A} & C\tr P \bar{B} & C\tr P C
+  } - R_{\phi} \tr M_{1}\tr - M_{1} R_{\phi} + R_{q}\tr \bmx{
+    0 & -1 \\
+    -1 & -2
+  } R_{q}\right)
+  \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } < 0 \to \\
+  & \to \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr
+  M
+  \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  } < 0 \to M < 0 
+\end{align*}
+
+As regards the ellipsoid condition I use the same as in \textit{"Linear integrator 1 dimension case"}.
+
+\subsection*{3 layer saturation controller to non-linear pendulum with integrator in the state}
+
+The same formulation was extended to the 3 layer network where the only things that change are the matrix $N$ and the ellipsoid conditions that now are larger: $n_{\phi}$ instead of just $1$.
+
+After solving the LMI problem I compared the sizes of the regions of attraction (ROA) of the linear system controlled with the saturated input, the non-system controlled with the saturated input and the non-system controlled with the 3-layer NN controller. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{ROA_comparison}
+    \caption{It is intuitive to think that the ROA decreases linearly with the number of constraints set to the LMI}
+\end{figure}
+
 
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
