@@ -58,15 +58,17 @@ $$
 
 With the ETM mechanism described as follows:
 
-$$
+\begin{equation} \label{ETM-mechanism}
 s^{+} = \text{min}_{m \in \NN} \left\{ m \geq s + 1 | \psi(\omega_m, \chi) \geq \rho \eta_m \right\}
-$$
+\end{equation}
+
 
 And $\eta$ dynamic is defined as:
 
-$$
+\begin{equation} \label{eta-dyn}
   \eta^{+} = (\rho + \lambda) \eta - \psi(\omega_m, \chi)
-$$
+\end{equation}
+  
 
 This formulation ensures $\eta$ to be always positive and made it possible to consider it as a positive system like in \cite{positive-systems}. 
 As a quick proof I can say that if the triggering condition $\psi$ is negative then the positiveness of $\eta$ is trivial. If instead $\psi$ is positive and $\psi \geq \rho \eta $
@@ -396,7 +398,43 @@ After solving the LMI problem I compared the sizes of the regions of attraction 
     \caption{It is intuitive to think that the ROA decreases linearly with the number of constraints set to the LMI}
 \end{figure}
 
+\subsection*{Extension to dynamic ETM}
+To further extend the problem the LMI formulation has been changed. A dynamic threshold on the ETM mechanism as been added and some matrices have been changed to account for the possible reference to include in the integrator dynamics. 
+The same mechanism introduced in (\ref{ETM-mechanism}) and (\ref{eta-dyn}) has been used. 
 
+Now each layer will have its own dynamical threshold:
+
+\begin{align*}
+  \eta_i^{+} &= (\rho_{i} + \lambda_{i}) \eta_i - \psi \\
+  \eta^{+} &= \bmx{
+    \eta_1^{+} \\
+    \vdots \\
+    \eta_l^{+}
+  } = \left( \bmx{
+    \rho_1 & 0 & \dots & 0\\
+    0 & \rho_2 & \dots & 0\\
+    \vdots & \vdots & \ddots & \vdots\\
+    0 & 0 & \dots & \rho_l
+  } + \bmx{
+    \lambda_1 & 0 & \dots & 0\\
+    0 & \lambda_2 & \dots & 0\\
+    \vdots & \vdots & \ddots & \vdots\\
+    0 & 0 & \dots & \lambda_l
+  }\right) \bmx{
+    \eta_1 \\
+    \vdots \\
+    \eta_l
+  } - \bmx{
+    \psi_1 \\
+    \vdots \\
+    \psi_l
+  } = \\
+  &= \left( R + L \right) \eta - \psi
+\end{align*}
+
+I define the vector $\one \in \RR^{n_{x}} = \bmx{1 & \dots & 1}\tr$
+
+And the Lyapunov function is now defined as $V = \tilde{x}\tr P \tilde{x} + He \left\{ \one\tr \eta \right\}$
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
 \printbibliography
