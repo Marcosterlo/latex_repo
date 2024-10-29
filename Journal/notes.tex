@@ -200,7 +200,7 @@ With \begin{itemize}
 
 I can express then:
 
-\begin{align*}
+\begin{align} \label{matricione}
   \Delta V &= (\tilde{x}^{+})\tr P \tilde{x}^{+} - \tilde{x}\tr P \tilde{x} = \left( \bar{A} \tilde{x} + \bar{B} \tilde{\psi} + C \tilde{\phi} \right)\tr P \left( \bar{A} \tilde{x} + \bar{B} \tilde{\psi} + C \tilde{\phi} \right) - \tilde{x}\tr P \tilde{x} = \\
   &= \bmx{
     \tilde{x}\\
@@ -215,7 +215,7 @@ I can express then:
     \tilde{\psi}\\
     \tilde{\phi}
   }
-\end{align*}
+\end{align}
 
 I have to include now the sector conditions to deal with the non-linearity of the activation functions of the NN controller. In this particular case we deal with only one saturation function. Following the approach in \cite{css-extended} I can express the sector condition as:
 
@@ -331,7 +331,7 @@ Finally, I include the sector condition for the non-linearity $\phi = sin(\theta
 
 I add this sector condition to $\Delta V$:
 
-\begin{align*}
+\begin{align} \label{V-condition}
   \Delta V &\leq \Delta V - He \left\{\bmx{
     \tilde{x} \\
     \tilde{\psi} \\
@@ -381,7 +381,7 @@ I add this sector condition to $\Delta V$:
     \tilde{\psi} \\
     \tilde{\phi}
   } < 0 \to M < 0 
-\end{align*}
+\end{align}
 
 As regards the ellipsoid condition I use the same as in \textit{"Linear integrator 1 dimension case"}.
 
@@ -434,7 +434,257 @@ Now each layer will have its own dynamical threshold:
 
 I define the vector $\one \in \RR^{n_{x}} = \bmx{1 & \dots & 1}\tr$
 
-And the Lyapunov function is now defined as $V = \tilde{x}\tr P \tilde{x} + He \left\{ \one\tr \eta \right\}$
+And the Lyapunov function is now defined as $V = \tilde{x}\tr P \tilde{x} + He \left\{ \one\tr \eta \right\}$.
+The ETM mechanism for the $i$-th layer now includes the sector conditions for the activation functions and a contribution relative to the integrator state:
+
+$$
+  \tilde{\psi}\tr T \left[ G \tilde{x} - \tilde{\nu} + \tilde{\psi} \right] - k\tr \Omega k \geq R \eta
+$$
+
+With $k$ being the integrator $C x - r$ and $\Omega$ being a positive definite diagonal matrix. The dynamic of the integrator can now be possibly expressed as $z^{+} = z + k = z + C x - r$. There is a particular property in this configuration being the first element of $C \tilde{x} = C x - r$. This is useful because it doesn't require us to add another term $r$ in this case to the extended vector and still regroup everything with respect to $\left[ \tilde{x}, \tilde{\psi}, \tilde{\phi} \right]\tr$.
+The dynamic of the system can be expressed by:
+
+$$
+  x^{+} = A x + B u + C \phi + D r \to \tilde{x}^{+} = A \tilde{x} + B \tilde{\psi} + C \tilde{\phi} + D r - D r = A \tilde{x} + B \tilde{\psi} + C \tilde{\phi}
+$$
+
+I rewrite the sector conditions in a more compact way expressing:
+
+\begin{align*}
+  \Phi &= \bmx{
+    \tilde{\psi}_{1}\tr T_{1} [G_{1} \tilde{x} - \tilde{\nu}_{1} + \tilde{\psi}_{1}] - k\tr \Omega_{1} k  & \cdots & 0 \\
+    \vdots & \ddots & \vdots \\
+    0 & \cdots & \tilde{\psi}_{l}\tr T_{l} [G_{l} \tilde{x} - \tilde{\nu}_{l} + \tilde{\psi}_{l}] - k\tr \Omega_{l} k
+  } = \\
+  &= \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr \bmx{
+    -C_{k}\tr \Omega C_{k} & 0 & 0 & 0 & 0 \\
+    TG & -T & T & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 
+  } \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\nu} \\
+    \tilde{\phi} \\
+  } = \\
+  &= \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }\tr \bmx{
+    -C_{k}\tr \Omega C_{k} & 0 & 0 & 0 & 0 \\
+    TG & -T & T & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 
+  } \bmx{
+    \Id & 0 & 0 \\
+    R N_{\nu x} & \Id - R & 0 \\
+    0 & \Id & 0 \\
+    0 & 0 & \Id 
+  } \bmx{
+    \tilde{x} \\
+    \tilde{\psi} \\
+    \tilde{\phi}
+  }
+\end{align*}
+
+With $C_{k} \in \RR^{n_{\phi} \times n_{x}} = \bmx{
+  1 & 0 & 0 \\
+  \vdots & \vdots & \vdots \\
+  1 & 0 & 0 
+}$ selected to extract just the $\theta$ parameter from the state $x$.
+$\eta^{+}$ can be rewritten as: $\eta^{+} = (R + L) \eta - \Phi \one$
+With this condensed notation I proceed to discuss the sign of the increment of the Lyapunov function $\Delta V$ with respect to equation. \ref{matricione}:
+
+\begin{align*}
+  \Delta V &= (\tilde{x}^{+})\tr P (\tilde{x}^{+}) + He\left\{ \one\tr \eta^{+} \right\} - \tilde{x}\tr P \tilde{x} - He\left\{ \one\tr \eta \right\} =\\
+  &= \left( A \tilde{x} + B \tilde{u} + C \tilde{\phi} \right)\tr P \left( A \tilde{x} + B \tilde{u} + C \tilde{\phi} \right) - \tilde{x}\tr P \tilde{x} + He\left\{ \one\tr \left(   \left( R + L \right)\eta - \Phi \one - \eta  \right) \right\} = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \bmx{
+    \bar{A}\tr P \bar{A} - P & \bar{A}\tr P \bar{B} & \bar{A}\tr P C \\
+    \bar{B}\tr P \bar{A} & \bar{B}\tr P \bar{B} & \bar{B}\tr P C \\
+    C\tr P \bar{A} & C\tr P \bar{B} & C\tr P C
+  } \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( \left( R + L - I \right) \eta - \Phi \one \right) \right\} =
+\end{align*}
+
+I can synthesize the ETM condition rewriting something like: $\Phi \one \geq R \eta$ that holds element-wise. I can then exploit $\eta \leq R^{-1} \Phi \one$ and plug it in $\Delta V$ to get rid of $\eta$:
+
+\begin{align*}
+  \Delta V &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( \left( R + L - I \right) R^{-1} \Phi \one - \Phi \one \right) \right\} = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( L - I \right) R^{-1} \Phi \one \right\} < 0
+\end{align*}
+
+Calling now $ \Gamma = (L - I) R^{-1} $ and regrouping everything with respect to the augmented vector I can rewrite:
+
+\begin{align*}
+  \Delta V &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } - \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \bmx{
+    -C_{k}\tr \Gamma \Omega C_{k} & 0 & 0 & 0 & 0 \\
+    \Gamma T G & - \Gamma T & \Gamma T & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0
+  } \bmx{
+    Id & 0 & 0 \\
+    R N_{\nu x} & Id - R & 0 \\
+    0 & Id & 0\\
+    0 & 0 & Id
+  } \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \left( M - M_{\pi} R_{\pi} - R_{\pi}\tr M_{\pi}\tr \right) \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }
+\end{align*}
+
+Finally, adding the sector conditions for the non-linearity $\phi$ like in equation. \ref{V-condition} I can impose the negative definiteness of the Lyapunov function derivative:
+
+\begin{equation}
+  \Delta V \leq \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \left( 
+    M - M_{\pi} R_{\pi} - R_{\pi}\tr M_{\pi}\tr - R_{q}\tr \bmx{
+      0 & -1 \\
+      -1 & -2
+    } R_{q}
+   \right) \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+   }
+\end{equation}
+
+Given the local validity of the sector conditions for the activation functions it's necessary to add some ellipsoid conditions to the Lyapunov function. I want $\tilde{x}\tr \alpha P \tilde{x} \leq 1$, from the sector condition definition, see set $\cS$ in \cite{css-extended} I have:
+
+$$
+  \cS = \left\{ x(k) \in \RR^{n_{p}} : -\bar{\nu} - \nu_* \leq G (x(k) - x_*) \leq \bar{\nu} - \nu_* \right\}
+$$
+
+Since $\nu_* = 0$ the condition directly translates into $|G \tilde{x}| \leq \bar{\nu} \to (G \tilde{x})\tr (G \tilde{x}) \leq \bar{\nu}^2 \to \tilde{x}\tr \frac{G\tr G}{\bar{\nu}^{2}} \tilde{x} \leq 1$ I want this condition to be included in the ellipsoid defined by $\cE(P, x_*) = \left\{ x \in \RR^{n_{F}}: \tilde{x}\tr \gamma P \tilde{x} \leq 1 \right\}$
+
+\begin{multline*}
+  \tilde{x}\tr \frac{G\tr G}{\bar{\nu}^{2}} \tilde{x} \leq \tilde{x}\tr \gamma P \tilde{x} \leq 1 \to \frac{G\tr G}{\bar{\nu}^{2}} \leq \gamma P \leq 1 \to \gamma P - \frac{G\tr G}{\bar{\nu}^{2}} \geq 0\\
+  0
+\end{multline*}
+
+It is now possible to apply Schur's complement, dividing everything by $\gamma$:
+
+\begin{equation}
+  P - \frac{G\tr G}{\gamma \bar{\nu}^{2}} \geq 0 \to \bmx{P & G\tr\\ G & \gamma \bar{\nu}^{2}} \geq 0
+\end{equation}
+
+Now by pre and post multiplying by $\bmx{\Id & 0\\ 0 & T}$:
+
+\begin{equation}\label{ellipsoid}
+  \bmx{P & G\tr T\\
+  TG & \gamma \bar{\nu}^{2} T^{2}} \geq 0
+\end{equation}
+
+Equation \ref{ellipsoid} is the last LMI condition to add. The problem arises due to the bilinear term $TG$. A new change of variable is introduced: $Z \triangleq TG$. Doing so we deal with the bilinear term that appears here and in $M_{\pi}$. We still have to deal with the bilinear term $T^{2}$. Following the same approach as in \cite{css-extended} I exploit the inequality:
+
+$$
+  \left[ \alpha \bar{\nu}^{-2} - T \right] \bar{\nu}^{2}\left[ \alpha \bar{\nu}^{-2} - T \right] \geq 0 \to \alpha^{2} \bar{\nu}^{-2} - 2 \alpha T + \bar{\nu}^{2} T^{2} \geq 0 \to \bar{\nu}^{2} T^{2} \geq 2 \alpha T - \alpha^{2} \bar{\nu}^{-2}
+$$
+
+I can rewrite the ellipsoid condition as putting $\gamma = 1$
+
+$$
+  \bmx{P & Z\tr\\
+  Z & \bar{\nu}^{2} T^{2}} \geq \bmx{
+    P & Z\tr\\
+    Z & 2 \alpha T - \alpha^{2} \bar{\nu}^{-2}
+  } \geq 0
+$$
+
+More precisely a condition like the previous has to be imposed for each activation function in the network. Then we have to discuss the value of $\alpha$: the unitary value works but results to give conservative results. To find the optimal value a golden-section search algorithm can be used since the problem to address can be expressed as an unimodal function defined on a given interval, it has the advantage to reduce the search interval by a constant factor at each step.
+
+\begin{enumerate}
+    \item \textbf{Define the Interval and the Golden Ratio:} \\
+    Let $[a = 1, b = 0]$ be the initial interval containing the values for which the LMI is feasible. Defining the golden ratio $\varphi$ as:
+    $$
+    \varphi = \frac{1 + \sqrt{5}}{2}
+    $$
+    
+    \item \textbf{Set Initial Interior Points:} \\
+    Calculate two interior points $ \alpha_1 $ and $ \alpha_2 $ within $[a, b]$ such that:
+    $$
+    x_1 = b - \frac{b - a}{\varphi}, \quad x_2 = a + \frac{b - a}{\varphi}.
+    $$
+    
+    \item \textbf{Solve the LMI:} \\
+    Solve the LMI and store the value of the maximum eigenvalue of the $P$ matrix: $ \lambda_1, \lambda_2 $.
+    
+    \item \textbf{Narrow the Interval:} \\
+    Based on the values $ \lambda_1, \lambda_2$, update the interval $[a, b]$ as follows:
+    \begin{itemize}
+        \item If $ \lambda_1 < \lambda_2 $, then the minimum is in the interval $[a, x_2]$. Set $ b = x_2 $.
+        \item If $ \lambda_2 < \lambda_1 $, then the minimum is in the interval $[x_1, b]$. Set $ a = x_1 $.
+    \end{itemize}
+    
+    \item \textbf{Repeat the Process:} \\
+    Recalculate $ x_1 $ and $ x_2 $ within the new interval $[a, b]$ and repeat steps 3 and 4. At each iteration, the interval is reduced by a factor of the golden ratio, retaining only the portion containing the minimum.
+    
+    \item \textbf{Convergence:} \\
+    Continue until the length of the interval $[a, b]$ is less than a chosen tolerance level, $\epsilon$. At this point, any $\alpha$ value within the interval can be considered to give the biggest Region of attraction estimate.
+\end{enumerate}
+
+After solving the LMI, even though the solution is found the ROA is still incredibly small. In addition to that the LMI finds a solution such that $\Omega$ has every item close to 0, this means that the "help" we want to give the ETM to trigger less is not helpful to the LMI problem and is therefore ignored. 
+
+Since no other tweaks on the LMI formulation seems to be possible the next approach will be using the currently deep learning trained network and re-train it with RL by projecting a solution of the LMI in each training step to enlarge as much as possible the starting ROA. 
+
+\section*{Retraining of NN with RL to enlarge the ROA}
+The main problem now is to design an efficient cost function to enlarge the ROA. After a first brainstorm the ideas are:
+\begin{itemize}
+  \item Give as a cost $ln(1/\bar{\lambda})$ with $\bar{\lambda}$ the maximum eigenvalue of last $P$. 
+  \item Use $\Delta V$ when it's negative as a cost. Like a $\texttt{relu}(\Delta V)$.
+\end{itemize}
+
+
+
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
 \printbibliography
