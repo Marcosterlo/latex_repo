@@ -1,0 +1,48 @@
+\documentclass{article}
+\input{../math_commands}
+\input{../custom_imports}
+\usepackage[margin=54pt]{geometry}
+
+
+\begin{document}
+
+\date{}
+\author{}
+
+\title{Set-up del RL per migliorare la rete}
+\maketitle
+
+\section*{Environment}
+Usando sempre \texttt{stable\_baseline} ho pensato di semplificare il problema e invece di usare il pendolo come env uso direttamente i pesi e i bias. La action quindi sarebbe un vettore lungo quanto tutti i parametri (pesi e bias) che contiene degli incrementi da sommare ai parametri. 
+
+\subsection*{Action e observation space}
+Sono dei vettori belli lunghi. Per la nuova rete addestrata sul sistema senza integratore ($x = \bmx{\theta, \dot{\theta}}$) ho 3 hidden layer da 32 neuroni:
+\begin{itemize}
+  \item N pesi: $2 \cdot 32 + 32 \cdot 32 + 32 \cdot 32 + 32 \cdot 1 = 2144$
+  \item N bias: $32 + 32 + 32 + 1 = 97$
+\end{itemize}
+In totale 2241 parametri. La action quindi sarà un vettore di 2241 elementi.
+
+\subsection*{Reward}
+A ogni step prendo il nuovo set di pesi e bias e risolvo la LMI corrispondente.
+\begin{itemize}
+  \item Feasible ma ROA peggiore: reward positivo e proporzionale in qualche modo alla differenza tra la migliore ROA attuale e quella ottenuta con i nuovi parametri.
+  \item Feasible e ROA migliore: reward molto positivo e conservo i pesi e bias attuali
+  \item Non feasible: reward negativo
+\end{itemize}
+\textit{Problema:} I bias influenzano solo l'equilibrio finale ma non la dinamica del pendolo e la ROA. Quale potrebbe essere un buon criterio per capire come cambiarli?
+
+\subsection*{Reset}
+Quando viene chiamato il reset rimetto i pesi e bias che danno la ROA migliore trovata finora.\\
+
+\subsection*{Durata episodi}
+Dato che ora l'env non è un vero e proprio sistema come regolo la durata di un episodio? Pensavo a fare continuare un episodio finché trova risultati feasible anche se non migliori.
+
+
+\section*{Training}
+Data la dimensione della action, hai qualche consiglio sulla scelta della architettura della rete? Ho provato con reti relativamente semplici ($32, 128, 128, 32$) e fanno abbastanza schifo, trova al massimo 3-4 soluzioni migliori (di pochissimo) all'inizio e poi parte per la tangente
+
+\subsection*{Tempi di addestramento}
+Dato che deve risolvere una LMI a ogni step ovviamente si parla di tempi biblici ma almeno il problema è incrementale e se si trova anche solo una soluzione migliore in una run si può ripartire da quella.
+
+\end{document}
