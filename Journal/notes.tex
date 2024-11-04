@@ -683,6 +683,13 @@ The main problem now is to design an efficient cost function to enlarge the ROA.
   \item Use $\Delta V$ when it's negative as a cost. Like a $\texttt{relu}(\Delta V)$.
 \end{itemize}
 
+The problem under examination is now the simpler non-linear pendulum without integrator in the state. A new starting network has been trained with deep neural network based on a linear LQR controller. Now the two approaches listed before will be followed:
+
+\begin{itemize}
+  \item The first approach sees the treatment of the environment as the NN itself. The action will be a list of increments to add to each element of the weights and the biases. The starting point will be the previously trained network. A step is the creation of the new weights and biases and solve the LMI for them. The cost will be continuous and proportional to the area of the ROA found. If infeasible the cost will be $0$. The length of one episode will be decided a priori. If we have a better solution that gives a bigger ROA then the weights will be stored but not updated. They will be updated only on reset and if we have an increment in the ROA's area that is big enough. Another aspect to take into account is the size of the training NN. The action will be a vector of $\simeq 2100$ elements.
+  \item This SEEMS easier to implement. A rollout of the system will be done and the $\Delta V$ of the rollout will be computed with respect to the last $P$ found, it will then be used as a cost. The architecture of the NN should be the same as the one trained with deep learning and should accept as a starting point the previously trained weights and biases. At each reset a LMI will be solved, if it leads to a bigger ROA then the $P$ matrix to which we refer to improve will be updated.
+\end{itemize}
+
 
 
 \pagebreak
