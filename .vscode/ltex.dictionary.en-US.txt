@@ -11,3 +11,4 @@ Arcak
 Automatica
 cvxpy
 relu
+LMIs

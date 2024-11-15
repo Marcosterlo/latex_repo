@@ -687,9 +687,31 @@ The problem under examination is now the simpler non-linear pendulum without int
 
 \begin{itemize}
   \item The first approach sees the treatment of the environment as the NN itself. The action will be a list of increments to add to each element of the weights and the biases. The starting point will be the previously trained network. A step is the creation of the new weights and biases and solve the LMI for them. The cost will be continuous and proportional to the area of the ROA found. If infeasible the cost will be $0$. The length of one episode will be decided a priori. If we have a better solution that gives a bigger ROA then the weights will be stored but not updated. They will be updated only on reset and if we have an increment in the ROA's area that is big enough. Another aspect to take into account is the size of the training NN. The action will be a vector of $\simeq 2100$ elements.
+
+  \textbf{This method was discarded because of the big dimension of the action. Several attempts were executed but with no good results.}
+
   \item This SEEMS easier to implement. A rollout of the system will be done and the $\Delta V$ of the rollout will be computed with respect to the last $P$ found, it will then be used as a cost. The architecture of the NN should be the same as the one trained with deep learning and should accept as a starting point the previously trained weights and biases. At each reset a LMI will be solved, if it leads to a bigger ROA then the $P$ matrix to which we refer to improve will be updated.
 \end{itemize}
 
+Last method resulted to be the efficient one. It was hard to set up correctly the environment to make it compliant with \texttt{stable\_baselines3}, in particular the handling of the LMI mid-training and the following update of the current P matrix stored by the environment. 
+Rather than a linear method a sequence of different tests has been done to find the best hyperparameters for the training. Initially the results from the \textit{LQR} solution were used as a "warm start" to try and find solutions that led to bigger Region of Attractions. To accomplish so two different reward functions design were alternatively used:
+
+\begin{itemize}
+  \item Classical RL reward: $J = -w_{\theta} \theta^2 - w_{v} v^2 - w_{\eta} \eta^2 - w_{u} u^2 + \delta$\\
+  Where $\delta$ is a small constant that acts as a constant reward for each step the policy manages to keep the environment "alive". Even if not directly demonstrated using a reward function shaped like this should give results similar in quality to the LQR since both approaches try to minimize the quadratic weight of the state and the control input. 
+  \item Custom defined reward: $J = - \Delta V + \frac{\Delta(ROA)}{n_{episode}}$
+  
+  Here directly passing $\Delta V$ serves to tell the algorithm to penalize every action that leads to a Lyapunov function that is not strictly decreasing. The second term is a bonus that is given to the agent when it manages to enlarge the ROA, since the update of the policy is done at the end of each rollout the bonus is divided by the number of episodes to make the reward small enough to not overshadow the $\Delta V$ term. If the current policy update gives a bigger ROA then the weights are stored and the $\Delta(ROA)$ is instead the overall area of the ROA found, hence giving a bit more reward than cost. Also, the $P$ matrix that is used to compute the reward is updated with the last one found.
+
+  An important aspect that had to be taken into account is the nature of the action give by the RL algorithm being normalized between $-1$ and $1$. To address this peculiarity the LQR solution was found again to be compliant. Given the normalized nature of the action that then get multiplied by the maximum torque appliable by the system I thought to consider it as a saturation applied to the output of the NN and the input of the system. I modified accordingly the LMI by adding an element to the matrices that manage the activation functions sector conditions and another constraint for the ellipsoid condition that now takes the maximum torque as a bound and not the saturation functions value used in the activation function.
+
+  By empirical observations it has been noticed that after a certain amount of rollouts the algorithm stopped to find feasible policy updates. To overcome this problem a new logic has been added: after a certain amount of rollouts without improvements or in the occurrence of an infeasible update the policy would be restored to the best one found so far, the optimizer is also reset and hence the training starts again from the best policy found so far. The good thing about this approach is the fact that the rollout buffer is not emptied hence, even if very slowly, the algorithm can still find better policies in the long term. After many iterations and several runs I ended up with a ROA that is more than 50 times larger in volume than the one found after the deep learning training.
+\end{itemize}
+
+\section*{New direction of the research}
+Once the ROA has been enlarged the next step is to try and find a direction to present the results found so far. A first idea is to make the paper centered around the ETM implementation. Using the new policy already it shows that it is feasible with dynamic ETM. The behavior is good characterized by a very high update rate of the first layer ($\simeq 100\%$) but the update rate of the last layer, the one responsible for the actual input update to the system, is more than halved stabilizing around $40\%$. Obviously the addition of the ETM mechanism makes the system more conservative since it reduces the Region of Attraction. For this reason we want now to find a way to make the reduction of the ROA preserve some particular directions that are now guaranteed to have more stable states due to the addition of the integrator in the dynamics.
+
+To address this problem Samuele advised to look at some work regarding multi-objective LMIs and to look at previous works of Sophie. Most probably It will be translated into the application of another constraint to the $\Delta V$ sign in the LMI and some change in the objective of the problem definition. 
 
 
 \pagebreak
