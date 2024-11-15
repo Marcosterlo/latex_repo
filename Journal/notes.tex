@@ -713,6 +713,13 @@ Once the ROA has been enlarged the next step is to try and find a direction to p
 
 To address this problem Samuele advised to look at some work regarding multi-objective LMIs and to look at previous works of Sophie. Most probably It will be translated into the application of another constraint to the $\Delta V$ sign in the LMI and some change in the objective of the problem definition. 
 
+Ideas to address:
+\begin{itemize}
+  \item Since the current static ETM matches the minimum feasible ROA we could think of some other ETM mechanism. To be clearer the quadratic constraints of the non-linearities of the activation functions are mandatory and cannot be neglected. Since the static ETM uses the exact same conditions It is clear that the ROA will be the same. 
+  \item One possible criteria to try and obtain with an ETM is something regarding the inter-event period and the preferred direction to preserve in ROA shrinking. In particular the direction around $\theta$ since the addition of the integrator in the dynamics makes the system more stable in that direction. Some work of Sophie should have addressed something similar. As regards the inter-event period look at some work of Antoine Girard.
+  \item Another possible improvement is changing the quadratic constraints whenever we have some fixed matrices like the one used to address the $sin(\theta) - \theta$ non-linearity. It sees the addition of new variables and constraints to the LMI like seen in the two \textit{k-contraction} papers of Samuele.
+  \item The last idea is to try and find a way to implement multiple objectives in the LMI. There are some papers to take idea from like in \cite{multiobjective-1} and \cite{multiobjective-2}.
+\end{itemize}
 
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
