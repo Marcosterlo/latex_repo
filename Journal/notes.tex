@@ -721,6 +721,34 @@ Ideas to address:
   \item The last idea is to try and find a way to implement multiple objectives in the LMI. There are some papers to take idea from like in \cite{multiobjective-1} and \cite{multiobjective-2}.
 \end{itemize}
 
+After fixing some error on $x_{*}$ computation solving the following implicit equation:
+
+\begin{align*}
+  x^{+} &= A x + B u + C \phi + D r\\
+  x_{*} &= A x_{*} + B u_{*} + C \phi(x_{*}) + D r \\
+  u_{*} &= N_{ux} x_{*} + N_{u \omega} \omega_{*} + N_{ub} = \\
+  &= N_{ux} x_{*} + N_{u \omega} \nu_{*} + N_{ub} = \\
+  &= N_{ux} x_{*} + N_{u \omega} \left( \Id - N_{\nu \omega} \right) ^{-1} \left(  N_{\nu x} x_{*} + N_{\nu b}\right) + N_{\nu b} = \\
+  &= \left( N_{ux} + N_{u \omega} R N_{\nu x} \right) x_{*} + N_{u \omega} R N_{\nu b} + N_{ub} = R_{\omega} x_{*} + R_{b}\\
+  x_{*} &= A x_{*} + B R_{\omega} x_{*} + B R_{b} + C \left( sin(K x_{*}) - K x \right) + D r = \\
+  x_{*} &= \left( A + B R_{\omega} - C K \right) x_{*} + B R_{b} + C sin(K x_{*}) + D r
+\end{align*}
+
+Hence, the implicit equation to solve is:
+
+\begin{equation}
+  \textit{func}(x) = (-I + A + B R_{\omega} - C K) x + B R_{b} + C sin(K x) + D r 
+\end{equation}
+
+With $K = \bmx{1 & 0 & 0}$
+ 
+The issue I wanted to solve was the continuous update and event triggering even after the system has reached the equilibrium. The equilibrium reach was confirmed by inspecting the behavior of the system, it has been shown a Lyapunov function that tends to 0 (order of $1e-30$) and a norm of $\tilde{x} = x - x_{*}$ that tends to 0 (order of $1e-6$) after just 300 steps. The control input also tends to $u_{*}$ faster than the state but slower than the Lyapunov.
+The intuition was to add some threshold on the magnitude of the actors of the ETM, since the ETM mechanism defined by $
+  \Psi \geq \rho \eta $ triggers around equilibrium for very small values of $\Psi$ (around $1e-30$) by adding a random threshold small enough, even if it was not yet implemented in the LMI, an improvement on the update rate has been noticed. However, it didn't eliminate the behavior we wanted to avoid being the non-necessary updates once the equilibrium has been reached. An increment on the update rate has been observed until the threshold was not big enough to mess up all the system and ETM mechanism.
+
+  To continue addressing the problem I will look into the \textit{"Stubborn State Observers"} topic first introduced by Luca. See \cite{stubborn-1}, \cite{stubborn-2} and \cite{stubborn-3}.
+
+
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
 \printbibliography
