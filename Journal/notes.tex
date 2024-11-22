@@ -748,6 +748,208 @@ The intuition was to add some threshold on the magnitude of the actors of the ET
 
   To continue addressing the problem I will look into the \textit{"Stubborn State Observers"} topic first introduced by Luca. See \cite{stubborn-1}, \cite{stubborn-2} and \cite{stubborn-3}.
 
+  \subsection*{Finsler's Lemma workaround}
+  
+  A way to try and solve the problem was to use a different matrix for the ETM. For the $i^{th}$ layer it was used the following matrix so far:
+
+  $$    
+    \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{i}}\\
+      \tilde{\nu_{i}}
+    }\tr
+    \Omega_{i}
+    \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{i}}\\
+      \tilde{\nu_{i}}
+    } = \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{i}}\\
+      \tilde{\nu_{i}}
+    }\tr
+    \bmx{
+      0 & 0 & 0\\
+      T_{i} G_{i} & T_{i} & -T_{i}\\
+      0 & 0 & 0 
+    }
+    \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{i}}\\
+      \tilde{\nu_{i}}
+    }
+  $$
+
+  With $TG = Z$ to address the bilinear term. Due to the sparseness of $\Omega$ we want to find a denser matrix $X$ that approximates $\Omega$ and is compliant with the Finsler's Lemma. It can be done by adding the following constraint in the LMI:
+
+  $$
+  \Omega = \bmx{
+    \begin{array}{ccc|ccc|ccc}
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      Z_{1} & T_{1} & -T_{1} & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      \hline
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & Z_{2} & T_{2} & -T_{2} & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      \hline
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & Z_{3} & T_{3} & -T_{3}\\
+      0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+    \end{array}
+  }
+$$
+
+$$
+  X = \bmx{
+    \begin{array}{c|c|c}
+      X_{1} & 0 & 0\\
+      \hline
+      0 & X_{2} & 0\\
+      \hline
+      0 & 0 & X_{3}
+    \end{array}
+  }
+$$
+  
+$$
+R_{\xi}\tr He\left\{ X - \Omega \right\} R_{\xi} + He \left\{  \pmx{N_{1} \\ N_{2} \\ N_{3}} \pmx{R N_{\nu x} & \Id - R & -\Id} \right\} \leq 0
+$$
+
+The matrix $R_{\xi}$ orders the vector that should be multiplied by $X$ and $\Omega$:
+
+$$
+     \bmx{
+      \tilde{x}\\
+      \tilde{\psi}\\
+      \tilde{\nu}
+     } = \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{1}}\\
+      \tilde{\psi_{2}}\\
+      \tilde{\psi_{3}}\\
+      \tilde{\nu_{1}}\\
+      \tilde{\nu_{2}}\\
+      \tilde{\nu_{3}}
+    } = \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{1}}\\
+      \tilde{\nu_{1}}\\
+      \tilde{x}\\
+      \tilde{\psi_{2}}\\
+      \tilde{\nu_{2}}\\
+      \tilde{x}\\
+      \tilde{\psi_{3}}\\
+      \tilde{\nu_{3}}
+    } R_{\xi} = \bmx{
+      \tilde{x}\\
+      \tilde{\psi_{1}}\\
+      \tilde{\nu_{1}}\\
+      \tilde{x}\\
+      \tilde{\psi_{2}}\\
+      \tilde{\nu_{2}}\\
+      \tilde{x}\\
+      \tilde{\psi_{3}}\\
+      \tilde{\nu_{3}}
+    } \bmx{
+      \Id & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & \Id & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & \Id & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & \Id & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & \Id & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & 0\\
+      0 & 0 & 0 & \Id & 0 & 0 & 0\\
+      0 & 0 & 0 & 0 & 0 & 0 & \Id
+    } 
+$$
+
+With this condensed notation I proceed to discuss the sign of the increment of the Lyapunov function $\Delta V$. I start by plugging the ETM condition, further considerations on the proper sector conditions will be done later. Now the matrix $X$ is used instead of $\Omega$:
+
+\begin{align*}
+  \Delta V &= (\tilde{x}^{+})\tr P (\tilde{x}^{+}) + He\left\{ \one\tr \eta^{+} \right\} - \tilde{x}\tr P \tilde{x} - He\left\{ \one\tr \eta \right\} =\\
+  &= \left( A \tilde{x} + B \tilde{u} + C \tilde{\phi} \right)\tr P \left( A \tilde{x} + B \tilde{u} + C \tilde{\phi} \right) - \tilde{x}\tr P \tilde{x} + He\left\{ \one\tr \left(   \left( R + L \right)\eta - X \one - \eta  \right) \right\} = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr \bmx{
+    \bar{A}\tr P \bar{A} - P & \bar{A}\tr P \bar{B} & \bar{A}\tr P C \\
+    \bar{B}\tr P \bar{A} & \bar{B}\tr P \bar{B} & \bar{B}\tr P C \\
+    C\tr P \bar{A} & C\tr P \bar{B} & C\tr P C
+  } \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( \left( R + L - I \right) \eta - X \one \right) \right\} =
+\end{align*}
+
+I can synthesize the ETM condition rewriting something like: $X \one \geq R \eta$ that holds element-wise. I can then exploit $\eta \leq R^{-1} X \one$ and plug it in $\Delta V$ to get rid of $\eta$:
+
+\begin{align*}
+  \Delta V &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( \left( R + L - I \right) R^{-1} X \one - X \one \right) \right\} = \\
+  &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + He\left\{ \one\tr \left( L - I \right) R^{-1} X \one \right\} < 0
+\end{align*}
+
+Calling now $ \Gamma = (L - I) R^{-1} $ and regrouping everything with respect to the augmented vector I can rewrite:
+
+\begin{align*}
+  \Delta V &= \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr M \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  } + \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }\tr R_{\nu}\tr \bar{R_{\xi}}\tr 
+  He \left\{ \Gamma \bar{X}  \right\} \bar{R_{\xi}} R_{\nu} \bmx{
+    \tilde{x}\\
+    \tilde{\psi}\\
+    \tilde{\phi}
+  }
+\end{align*}
+
+The matrix $\bar{R_{\xi}}$ now takes into account the non-linearity $\tilde{\phi}$, the matrix $R_{\nu}$ takes care of $\tilde{\nu}$ 
+
+$$
+  \bar{R_{\xi}} = \bmx{
+  \begin{array}{c | c}
+    R_{\xi} & 0\\
+    \hline
+    0 & \Id
+  \end{array}
+  }; R_{\nu} = \bmx{
+    \Id & 0 & 0\\
+    0 & \Id & 0\\
+    R N_{\nu x} & \Id - R & 0\\
+    0 & 0 & \Id
+  }
+$$
+
+Now the previously seen sector conditions for the sin non linearities can be added in the same way as before. 
+
+\textbf{SHOULD I ADD SECTOR CONDITIONS FOR ETM OR ARE THEY ALREADY TAKEN INTO ACCOUNT INSIDE THE FINSLER CONDITIONS?}
 
 \pagebreak
 \emergencystretch=2em % To account for hbox overflow warning
