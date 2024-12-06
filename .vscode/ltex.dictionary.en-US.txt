@@ -12,3 +12,4 @@ Automatica
 cvxpy
 relu
 LMIs
+Finsler
