@@ -1,0 +1,111 @@
+\documentclass{article}
+\input{../math_commands}
+\input{../custom_imports}
+\usepackage{biblatex}
+\addbibresource{../biblio.bib}
+
+\begin{document}
+
+\title{Draft of paper}
+
+\author{Marco Sterlini}
+
+
+\section{Introduction}
+
+\section{Problem Formulation}
+We consider the non-linear discrete-time system stabilized by a Neural Network controller represented in figure \ref{fig:first_scheme} described by:
+\begin{equation}
+  x^{+} = A x + B \text{sat}(\bar{u}) + C \Phi(E x) + D d 
+\end{equation}
+with $x \in \RR^{n_x}$ the state vector, $\bar{u}$ the raw output of the controller, $\Phi$ the representation of the non-linearity of the system and $d$ a constant disturbance input.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{img/first_scheme}
+    \caption{Feedback system}
+    \label{fig:first_scheme}
+\end{figure}
+
+The controller is implemented as a Multi Layer Perceptron with $l$ layers, each with $n_{\phi_i}$ neurons, all the activation functions are saturation functions, represented by $\phi_i$. The objective is to design an event-triggering mechanism that allows to ease the computational burden associated with the computation of many non-linear activation functions providing at the same time sufficient sector conditions to handle the non-linearity of the system and the controller. The controller $\pi$ is defined by:
+\begin{equation}\label{eq:nn-equations}
+  \begin{aligned}
+  \omega^{0}(k) &= x(k) \\
+  \nu^{i}(k) &= W^{i} \omega^{i - 1}(k) + b^{i}, i \in \left\{ 1, \dots, l \right\}\\
+  \omega^{i}(k) &= \phi_i(\nu^i(k))\\
+  \bar{u}(k) &= \phi_l(\nu^l(k))
+  \end{aligned} 
+\end{equation}
+with $\nu^i(k) \in \RR^{n_{\phi_i}}$ the input to the $i$-th activation function $\phi_i: \RR^{n_{\phi_i}} \to \RR^{n_{\phi_i}}$, $\omega^i(k) \in \RR^{n_{\phi_i}}$ the output. The weights $W^i \in \RR^{n_{\phi_i} \times n_{\phi_{i-1}}}$ and biases $b^i \in \RR^{n_{\phi_i}}$ define the affine operation of each layer. The saturation function application is to be intended element-wise and will be denoted as $\phi_i(\nu^i(k)) = \left[ \varphi(\nu^i_1(k)), \dots, \varphi(\nu^i_{n_{\phi_i}}(k)) \right]$ and $\varphi: \RR \to \RR$ is the scalar activation function assumed to be symmetric and identical for every neuron. Adopting the same notation as in \cite{css-paper} we define the controller policy in a condensed form. Denoting the augmented vectors:
+\begin{equation*}
+  \nu_{\phi} = \bmx{\nu^1 \\ \vdots \\ \nu^l}, \omega_{\phi} = \bmx{\omega^1 \\ \vdots \\ \omega^l}, \phi_{\nu_{\phi}} = \bmx{\phi_1(\nu^1) \\ \vdots \\ \phi_l(\nu^l)} 
+\end{equation*}
+with $n_{\phi} = \sum_{i=1}^{l} n_{\phi_i}$ and $\phi: \RR^{n_{\phi}} \to \RR^{n_{\phi}}$ the combined non-linearity we have $\omega_\phi = \phi(\nu_\phi)$. Finally, conditions \ref{eq:nn-equations} can be rewritten as:
+\begin{equation*}
+  \bmx{u(k)\\ \nu_\phi(k)} = N \bmx{x(k) \\ \omega_\phi(k) \\ 1} 
+\end{equation*}
+where
+\begin{equation}\label{eq:first-N}
+  \bmx{
+    \begin{array}{c | c c c c | c}
+      \0 & \0 & \dots & \0 & W^l & b^l \\ 
+      \hline
+      W^1 & \0 & \dots & \0 & \0 & b^1 \\
+      \0 & W^2 & \dots & \0 & \0 & b^2 \\
+      \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+      \0 & \0 & \dots & W^{l-1} & \0 & b^{l-1}
+    \end{array}
+  }
+\end{equation}
+
+Similarly as in \cite{css-extended} we implement an event-triggering-mechanism (ETM) in every layer of the controller, we add also a final ETM to the output that will be used to further reduce the total number of events and call to the non-linear functions. The system and the controller are now described by figure \ref{fig:second_scheme}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{img/second_scheme}
+    \caption{Feedback system subject to ETM in the controller}
+    \label{fig:second_scheme}
+\end{figure}
+
+The dynamics of the system are now described by:
+\begin{equation}\label{eq:system-dynamics}
+  x^{+} = A x + B u + C \Phi(E x) + D d
+\end{equation}
+with $u$ the output of the controller subject to the ETM. This modification required to redefine the matrix $N$ defined in the controller policy \ref{eq:first-N} as:
+\begin{equation}\label{eq:last-N}
+  N = \bmx{
+    \begin{array}{c | c c c c | c}
+      \0 & \0 & \dots & \0 & \Id & 0 \\ 
+      \hline
+      W^1 & \0 & \dots & \0 & \0 & b^1 \\
+      \0 & W^2 & \dots & \0 & \0 & b^2 \\
+      \vdots & \vdots & \ddots & \vdots & \vdots & \vdots \\
+      \0 & \0 & \dots & W^l & \0 & b^l
+    \end{array}
+  } = \bmx{
+    \begin{array}{c | c | c}
+    N_{u x} & N_{u \omega} & N_{u b} \\
+    \hline
+    N_{\nu x} & N_{\nu \omega} & N_{\nu b}
+    \end{array} 
+  }
+\end{equation}
+
+
+
+
+\section{Main Results}
+
+\subsection{Event-triggering mechanism}
+
+\subsection{Lyapunov conditions}
+
+\subsection{Optimization procedure}
+
+\section{Simulations}
+
+\section{Conclusions}
+
+\printbibliography
+
+\end{document}
