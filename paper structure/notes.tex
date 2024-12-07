@@ -14,6 +14,36 @@
 \title{Ideas on paper structure}
 \maketitle
 
+\section{Results and news I want to show}
+\begin{itemize}
+  \item Theory structure with Finsler application portrayed as a Lemma in the most general way possible so to be able to cite it whenever I need. Condition on stability via LMI conditions portrayed as a Theorem like in Sophie's paper. All the results in the flexibility of $\lambda$ to obtain different results on the same LMI problem portrayed as a proposition.
+  \item New complexity of the system being now non-linear and with the integrator in the state
+  \item Very brief explanation of the training procedure followed (RL) to obtain the new controller with focus on the solution of the LMI embedded at the end of each rollout of the algorithm and used as cost or reward for the following episodes discarding non-feasible results ensuring a better or equal solution.
+  \item Change in the ETM: now dynamic and improved by finsler lemma
+  \item Plots:
+  \begin{itemize}
+    \item Plot of performances regarding size of ROA and density of updates with respect to $\lambda$ values, seen as interpolation of results or as double bar histograms
+    \item Plot of $\eta_i$ for $\lambda = 0$ to see the small decay rate
+    \item Plot of a very ugly trajectory inside the 3D ellipsoid with the projections on the 3 planes
+    \item Plot of a Lyapunov and $\Delta V$ maybe for $\lambda = 0$ and $\lambda = 1$
+    \item Maybe a stacked plot of the control inputs for a fixed time window that highlights the change in value after and event.
+  \end{itemize}
+  \item Tables with the update rates of each layer for different $\lambda$ values with respect to the case without finsler where the first layer sees an update rate close to $100\%$
+  \item Discussion about the best $\eta_0$ value to get with respect to $x_0$ to minimize the number of events.
+\end{itemize}
+
+\section{Elements I want to import from previous works}
+\begin{itemize}
+  \item Block representation of the system with the controller and the ETM, see Arcak and Carla
+  \item NN controller with weights and bias formulation with extraction of equilibrium.
+  \item Theoretical citation to Sophie's book as regards the sector conditions for saturation and their implementation as ETM conditions.
+  \item Paragraph focused on the optimization procedures implemented, maybe shorted but preceded by a section where it is explained in full detail stressing the flexibility of the problem. Concerning: \begin{itemize}
+    \item $R$ matrix minimization or maximization to $\Id$
+    \item Search algorithm for the best $\alpha$ used in the inclusion condition to deal with the bilinear term
+    \item Search algorithm 
+  \end{itemize} 
+  \item Simulations results previously discussed
+
 \section{\textbf{Abstract}}
 Things to cite:
 \begin{itemize}
