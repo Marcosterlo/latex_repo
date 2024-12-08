@@ -91,8 +91,31 @@ with $u$ the output of the controller subject to the ETM. This modification requ
   }
 \end{equation}
 
+The system is compliant with the assumptions of \textbf{Lemma 2} in \cite{css-extended} that allow us to define the following expressions regarding the equilibrium points $\left( x_*, u_*, \nu_*, \omega_* \right)$ of the system and controller given $x_*$, defining the matrices:
 
+\begin{equation}
+    \begin{aligned}
+         R &= (\Id - N_{\nu \omega})^{-1}\\
+         R_{\omega} &= N_{u x} + N_{u \omega} R N_{\nu x}\\
+         R_b &= N_{u \omega} R N_{\nu b} + N_{u b}
+    \end{aligned}
+\end{equation}
 
+With $N_{\nu \omega}$ always invertible due to its lower triangular structure. We express:
+
+\begin{equation}
+  \begin{aligned}
+    u_* &= R_{\omega} x_* + R_b\\
+    \nu_* &= R N_{\nu x} x_* + R N_{\nu b}\\
+    \omega_* &= \nu_*
+  \end{aligned}
+\end{equation}
+
+The equilibrium state $x^*$ needs some further discussion since the expression to retrieve it is no longer explicit due to the non-linearity $\Phi$. We can retrieve the vector using a numerical solver that minimizes the following expression for a given disturbance $\bar{d}$: 
+
+\begin{equation}
+  (A + B R_{\omega} - \Id) x_* + C \Phi(E x_*) + D \bar{d} + B R_b = 0
+\end{equation}
 
 \section{Main Results}
 
