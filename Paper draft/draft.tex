@@ -104,10 +104,11 @@ The system is compliant with the assumptions of \textbf{Lemma 2} in \cite{css-ex
 With $N_{\nu \omega}$ always invertible due to its lower triangular structure. We express:
 
 \begin{equation}
+  \bmx{u_* \\ \nu_*} = N \bmx{x_* \\ \omega_* \\ 1}; \ \  
   \begin{aligned}
-    u_* &= R_{\omega} x_* + R_b\\
+    \omega_* &= \nu_*\\
     \nu_* &= R N_{\nu x} x_* + R N_{\nu b}\\
-    \omega_* &= \nu_*
+    u_* &= R_{\omega} x_* + R_b
   \end{aligned}
 \end{equation}
 
@@ -118,8 +119,52 @@ The equilibrium state $x^*$ needs some further discussion since the expression t
 \end{equation}
 
 \section{Main Results}
+Taking inspiration from \textbf{Proposition 1} and \textbf{Lemma 3} in \cite{css-extended} we design the ETM for the output of each layer of the controller and the final output. The idea is to exploit the sector conditions of the activation functions as ETM conditions. 
 
 \subsection{Event-triggering mechanism}
+An ETM works by triggering an event that will update the current layer and propagate its value across the network. The triggering function will take as inputs the incremental variables of the state of the system 
+$\tilde{x}$, the current state of the layer $\tilde{\nu}$ and the dead-zone vector $\tilde{\psi} = \tilde{\nu} - \tilde{\omega}$. The ETM was defined as:
+\begin{equation}
+  \omega^{i}(k) = \begin{cases}
+    \omega^{i}(k-1) & \text{if } f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > 0\\
+    \phi_i(\nu^i(k)) & \text{otherwise}
+  \end{cases}
+\end{equation}
+
+In the precedent work \cite{css-extended} the function $f$ is defined on the basis of the saturation sector conditions in the following quadratic form:
+
+\begin{equation}\label{eqn:base_omega}
+  f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) = 
+  \tilde{\psi}\tr T^i \left[ G^i \tilde{x} + \tilde{\psi} - \tilde{\nu} \right] = 
+  \bmx{\tilde{x}\\ \tilde{\psi}^i \\ \tilde{\nu}^i}\tr
+  \bmx{
+    0 & 0 & 0\\
+    T^i G^i & T^i & -T^i\\
+    0 & 0 & 0
+  } 
+  \bmx{\tilde{x}\\ \tilde{\psi} \\ \tilde{\nu}} > 0
+\end{equation}
+
+This approach acts as a static ETM triggering an event as soon as the triggering function $f$ is positive. Inspired by the work of \cite{data-driven} we define a dynamic threshold to be implemented in the ETM. The idea is to lower the conservatism of the controller by introducing a time-varying threshold that will adapt to the current state of the system reducing the overall number of events and computational burden. The new triggering function is defined as:
+
+\begin{equation}
+  \omega^{i}(k) = \begin{cases}
+    \omega^{i}(k-1) & \text{if } f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > \rho^i \eta_i\\
+    \phi_i(\nu^i(k)) & \text{otherwise}
+  \end{cases};
+\end{equation}
+\begin{equation}
+  \eta^+_i = \rho^i \eta_i - f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu})\  \forall i \in \left( 1, \dots, l \right) 
+\end{equation}
+with $0 < \rho^i < 1 \ \forall i \in \left( 1, \dots, l \right)$. Since the previous conditions hold for each layer $i$ the notation can be simplified by denoting with:
+
+\begin{equation}
+  R = \text{diag} \left\{ \rho^1, \dots, \rho^l \right\}; \ \Psi = \text{diag}\left\{ f^1, \dots, f^l \right\}; \ \eta = \text{diag} \left\{ \eta^1, \dots, \eta^l \right\}
+\end{equation}
+
+The ETM triggering condition can be rewritten as: $\Psi > R \eta$ in an element-wise fashion.
+
+
 
 \subsection{Lyapunov conditions}
 
