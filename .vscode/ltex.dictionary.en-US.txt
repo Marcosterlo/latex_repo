@@ -14,3 +14,7 @@ relu
 LMIs
 Finsler
 NOLCOS
+Zoboli
+Tarbouriech
+LAAS-CNRS
+Université

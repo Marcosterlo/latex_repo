@@ -36,7 +36,7 @@
 \author[Second]{Samuele Zoboli}
 \author[Second]{Sophie Tarbouriech}
 
-\address[First]{Università di Trento, Trento, Italy (e-mail: marco.sterlini@studenti.unitn.it) }
+\address[First]{University di Trento, Trento, Italy (e-mail: marco.sterlini@studenti.unitn.it) }
 \address[Second]{LAAS-CNRS, Université de Toulouse, CNRS, Toulouse, France (e-mail:bu) }
 
 
@@ -193,7 +193,7 @@ In order to have a lighter notation the dead-zone vector  will be defined as $\p
 Note how ensuring ${\xi^i}\tr \Omega^i \xi^i < 0$ guarantees that the sector condition \eqref{eqn:sec_cond} holds.
 \end{remark}
 
-We can express now the new inter-dependency between the variables of interest:
+We can express now the new interdependency between the variables of interest:
 \begin{equation}\label{eqn:incremental}
   \begin{aligned}
     \tilde{u} &= R_{\omega} \tilde{x} - N_{u \omega} R \tilde{\psi}\\
@@ -252,7 +252,7 @@ $$
 $$
 Intuitively the lower the left-hand term of the inequality the lower will be the number of triggered events. Unfortunately $\Omega^i$ structure is non-flexible due to his strict relation with the sector condition expression. The following lemma addresses the issue by designing some triggering matrices that guarantee a lower update rate for each layer by the use of Finsler's lemma:
 
-\begin{lemma}\label{lem:finsler}: \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that ${\xi^i}\tr = \!R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr\! = R^i \xi\tr$, with reference to the structure in \eqref{eqn:sec_cond} and assuming \eqref{eqn:incremental} holds for some $\underline{\xi}, \bar{\xi} \in \RR^{n_x + 2n_{\phi}}$ such that $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists X^i \in\! \RR^{(nx + 2n_{\phi_i}) \times (nx + 2n_{\phi_i})},$ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ a diagonal matrix $T^i > 0 \in \RR^{n_{\phi_i} \times n_{\phi_i}}, G^i \in \RR^{n_{\phi_i} \times n_x}$ such that:
+\begin{lemma}\label{lem:finsler} \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that ${\xi^i}\tr = \!R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr\! = R^i \xi\tr$, with reference to the structure in \eqref{eqn:sec_cond} and assuming \eqref{eqn:incremental} holds for some $\underline{\xi}, \bar{\xi} \in \RR^{n_x + 2n_{\phi}}$ such that $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists X^i \in\! \RR^{(nx + 2n_{\phi_i}) \times (nx + 2n_{\phi_i})},$ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ a diagonal matrix $T^i > 0 \in \RR^{n_{\phi_i} \times n_{\phi_i}}, G^i \in \RR^{n_{\phi_i} \times n_x}$ such that:
 \begin{equation}\label{eqn:finsler}
      {R^i}\tr\! He\left\{X^i - \Omega^i\right\}\! R^i + He\left\{ \smallpmat{N^i_1\\ N^i_2\\ N^i_3}\! \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0
 \end{equation}
@@ -343,31 +343,31 @@ R_s &\in \RR^{(n_x + n_{\phi} + n_q) \times (n_x + n_q)}
     P & {Z_j^i}\tr\\
     \star & 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}
   } \geq 0 \ \forall i \in \left\{ 1, \dots, l \right\}, j \in \left\{ 1, \dots, n_{\phi_i} \right\} \label{eqn:inclusion}\\
-  &{R^i}\tr\! He\left\{X^i - \Omega^i\right\} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint}\\
+  &{R^i}\tr\! \He{X^i - \Omega^i} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint}\\
   &\bmx{P & {E_i}\tr \\ \star & \hat{\mu_i}^2} \geq 0 \forall i \in \left\{1, \dots, n_q \right\} \label{eqn:nonlin-inclusion-constraint}
 \end{align}
 \end{subequations}
 \vspace{.5em}
 \hrule
 \end{figure*}
-\begin{figure*}
-\begin{equation}\label{eqn:first-step}
- \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}\tr \left( \!
-  \bmx{\bar{A}\tr\\
-  \bar{B}\tr\\
-  C\tr
-  } P \bmx{\bar{A} & \bar{B} & C} - \bmx{
-  P & 0 & 0\\
-  0 & 0 & 0\\
-  0 & 0 & 0
-  } \right) \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}
- - \pmx{\1_l \otimes \xi}\tr \bx \pmx{\1_l \otimes \xi}
- + \bmx{\tilde{x}\\ \tilde{\Phi}}\tr\! \bmx{S & Q\\ \star & W} \bmx{\tilde{x} \\ \tilde{\Phi}}
- + \sqrt{\boldsymbol{\eta}}\tr \He{\bR - \Id} \sqrt{\boldsymbol{\eta}}
-\end{equation}
-\vspace{.5em}
-\hrule
-\end{figure*}
+% \begin{figure*}
+% \begin{equation}\label{eqn:first-step}
+%  \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}\tr \left( \!
+%   \bmx{\bar{A}\tr\\
+%   \bar{B}\tr\\
+%   C\tr
+%   } P \bmx{\bar{A} & \bar{B} & C} - \bmx{
+%   P & 0 & 0\\
+%   0 & 0 & 0\\
+%   0 & 0 & 0
+%   } \right) \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}
+%  - \pmx{\1_l \otimes \xi}\tr \He{\bX} \pmx{\1_l \otimes \xi}
+%  + \bmx{\tilde{x}\\ \tilde{\Phi}}\tr\! \bmx{S & Q\\ \star & W} \bmx{\tilde{x} \\ \tilde{\Phi}}
+%  + \sqrt{\boldsymbol{\eta}}\tr \He{\bR - \Id} \sqrt{\boldsymbol{\eta}}
+% \end{equation}
+% \vspace{.5em}
+% \hrule
+% \end{figure*}
 
 \begin{theorem}\label{thm:stability} \emph{ Consider the control system in \eqref{eqn:system-dynamics} and the controller $\pi_{\text{ETM}}$ in \eqref{eqn:nn-equations}. Assuming the existence of the matrices $P = P\tr > 0 \in \RR^{n_x \times n_x}$,} $T = \text{diag} \pmx{T^1 & \dots & T^l} \in \RR^{n_{\phi} \times n_{\phi}} > 0$, \emph{$Z = \smallpmat{{Z^1}\tr & \dots & {Z^l}\tr}\tr \in \RR^{n_{\phi} \times n_x}$, $\bR > 0$, $\bX$, $N^i_1, N^i_2, N^i_3 \ \forall i \in \left\{ 1, \dots, l \right\}$, $S \in \RR^{n_x \times n_x}, Q \in \RR^{n_x \times n_q}, W \in \RR^{n_q \times n_q}$ and a scalar $\alpha > 0$ such that the matrix inequalities \eqref{eqn:lyapunov}, \eqref{eqn:inclusion}, \eqref{eqn:finsler} hold, where $\hat{\nu}_j^i = \min(|-\bar{\nu}_j^i - \nu^i_{*, j}|,|\bar{\nu}_j^i - \nu^i_{*, j}|)$, $
 \hat{\mu}_i = \min(|-\underline{\mu}_i - v_i^*|,|\bar{\mu}_i - v_i^*|)$ and $G^i = (T^i)^{-1} Z^i\ \forall i \in \left\{1, \dots, l \right\}$
@@ -412,17 +412,20 @@ $$
 Once again this ensures $\cE(P, x_*) \subseteq \bar{S}$ defined in Assumption \ref{ass:nonlin} hence $\cE(P, x_*) \subseteq \left\{ S \cap \bar{S} \right\}$.
 
 We can define the following definite-positive candidate Lyapunov function structured as: $V = \tilde{x}\tr P \tilde{x} + \He{\1_l\tr\!\boldsymbol{\eta}}$. 
-By denoting $R_s$ as a proper transformation matrix such that $\bmx{\tilde{v}\tr & \tilde{\Phi}(Ex)}\tr = R_s \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)}\tr$ then
+By denoting $R_s$ as a proper transformation matrix such that $\bmx{\tilde{v}\tr & \tilde{\Phi}(Ex)}\tr = R_s \! \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)}\tr$ then the following holds $\forall x \in \cE(P, x_*)$:
 \begin{equation}\label{eqn:sector-sign}
-\bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)}\tr R_s\tr \bmx{S & Q \\ \star & W} R_s \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)} \geq 0\ \forall x \in \cE(P, x_*)
+\bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)}\tr \! R_s\tr \! \bmx{S & Q \\ \star & W} R_s \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)} \geq 0
 \end{equation}
-With respect to \eqref{eqn:auxiliary} and \eqref{eqn:incremental} by denoting $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\nu}\tr}\tr = R_{\nu} \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)\tr}\tr$, if we pre and post multiply \eqref{eqn:lyapunov} by $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr & \sqrt{\boldsymbol{\eta}}\tr}\tr$ and its transpose\\
-
-
-
-
-
-we obtain \eqref{eqn:first-step}. Considering \eqref{eqn:sector-sign} we verify Assumption \ref{ass:nonlin} then by collecting the proper terms and exploiting Kronecker product's properties we have
+With respect to \eqref{eqn:auxiliary} and \eqref{eqn:incremental} by denoting \\$\xi = R_{\nu} \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)\tr}\tr = R_{\nu} \zeta$, if we pre and post multiply \eqref{eqn:lyapunov} by $\bmx{\zeta\tr & \sqrt{\boldsymbol{\eta}}\tr}\tr$ and its transpose, by expressing the midterm as follows: 
+\begin{equation}
+\begin{aligned}
+  &\zeta\tr \pmx{\1_l \otimes R_{\nu}}\tr \He{\bX} \pmx{\1_l \otimes R_{\nu}} \zeta = \\
+  =& \pmx{\1_l 1 \otimes R_{\nu} \zeta}\tr \He{\bX} \pmx{\1_l 1 \otimes R_{\nu} \zeta} = \\
+  =& \pmx{\1_l \otimes \xi}\tr \He{\bX} \pmx{\1_l \otimes \xi} = \\
+  =& \1_l\tr \pmx{\Id_l \otimes \xi}\tr \He{\bX} \pmx{\1_l \otimes \xi} = \1_l\tr \mathbf{\Psi_x}
+\end{aligned}
+\end{equation}
+and considering \eqref{eqn:sector-sign} we verify Assumption \ref{ass:nonlin} then by collecting the proper terms $\forall (x, \boldsymbol{\eta}) \in \cE(P, x_*)$ we have
 \begin{equation}
 \begin{aligned}
 &\bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}\tr \left( \!
@@ -434,15 +437,11 @@ we obtain \eqref{eqn:first-step}. Considering \eqref{eqn:sector-sign} we verify 
   0 & 0 & 0\\
   0 & 0 & 0
   } \right) \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}} + \\
-  &+ \He{\1_l\tr (\bR - \Id) \boldsymbol{\eta}} - \mathbf{\Psi_x} < 0\\
+  &+ \He{\1_l\tr \bmx{(\bR - \Id) \boldsymbol{\eta} - \mathbf{\Psi_x}}} = \\
+  &= (\tilde{x}^+)^{\top} P \tilde{x}^+ - \tilde{x}\tr P \tilde{x} + \He{\1_l\tr (\boldsymbol{\eta}^+ - \boldsymbol{\eta})} = \Delta V < 0, 
 \end{aligned}
 \end{equation}
-If all conditions in \eqref{eqn:LMI} are met then \eqref{eqn:lyapunov} implies the following:
-\begin{equation}
-    (\tilde{x}^+)^{\top} P \tilde{x}^+ - \tilde{x}\tr P \tilde{x} + \He{\1_l\tr (\boldsymbol{\eta}^+ - \boldsymbol{\eta})} = \Delta V < 0, 
-\end{equation}
-{\color{blue} for all $(x, \beta)\in \cE(P)$. Therefore, $\cE(P)$ is forward invariant and all trajectories starting inside such a set converge to $(x,0)$, thus concluding the proof.}
-We conclude the proof by stating that $\forall (x, \boldsymbol{\eta}) \in \cE(P, x_*)$ the point $(x_*, \0)$ is LES, and $\Delta V(x, \boldsymbol{\eta}) < 0$, considering that the system is in Discrete Time (DT) then $\cE(P, x_*)$ is an invariant set and it is an inner-approximation of the ROA
+{\color{blue} Therefore, $\cE(P, x_*)$ is forward invariant and all trajectories starting inside such a set converge to $(x, \0)$, thus concluding the proof.}
 \end{proof}
 \subsection{Optimization procedure}
 
