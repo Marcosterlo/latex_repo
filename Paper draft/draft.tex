@@ -461,6 +461,8 @@ We state now a corollary whose results will be useful to derive some performance
   \emph{Then $(x_*, \0)$ is LES and $\cE(P, x_*)$ is an inner approximation of the ROA.}
 \end{corollary}
 
+{\color{red}{Mi fa cagare l'espressione della minimizzazione così}}
+
 By adding these constraints we obtain some desirable performances upgrade:
 \begin{itemize}
   \item By minimizing the trace of $P$ we are maximizing the volume of the ellipsoid $\cE(P, x_*)$ hence the ROA.
@@ -471,6 +473,7 @@ By adding these constraints we obtain some desirable performances upgrade:
   $$
   meaning that the smaller the value of $\beta_i$ the smaller will be the value that appears directly in the ETM triggering condition \eqref{eqn:etm-trigger} hence the lower the number of events.
 \end{itemize}
+{\color{red}{Vorrei migliorare questa parte}}
 
 Let us comment the quantity $\alpha$ that appears in \eqref{eqn:inclusion}, if this was considered as a variable then the statements of Theorem \ref{thm:stability} would not hold since we would encounter some bilinear terms. By fixing $\alpha$ to a constant value before the LMI evaluation we address the problem. The choice of $\alpha$ value is crucial since it will directly affect the conservatism of the solution that the problem will provide. The followed approach sees the deployment of a \emph{golden ratio search} to extract a good value. The algorithm is based on the bisection method with some basic improvements:
 \begin{itemize}
@@ -480,6 +483,23 @@ Let us comment the quantity $\alpha$ that appears in \eqref{eqn:inclusion}, if t
 \end{itemize}
 
 \section{Simulations}
+We considered an inverted pendulum system with mass $m = 0.15 kg$, length $l = 0.5 m$, damping coefficient $\mu = 0.05 N ms/rad$, gravitational acceleration $g = 9.81 m/s^2$ and the addition of an integrator in its dynamics. The DT model of the system is given with respect to \eqref{eqn:system-dynamics} by:
+\begin{equation}\label{eqn:pendulum}
+\begin{aligned}
+  &x = \bmx{\theta \\ \dot{\theta} \\ z} \quad 
+  A = \bmx{1 & dt & 0\\
+  \frac{g}{l} dt & 1 - \frac{\mu}{m l^2} dt & 0\\
+  1 & 0 & 1}\quad
+  B = \bmx{0\\ \frac{\bar{\tau}}{m l^2} dt\\ 0} \\
+  &C = \bmx{0 \\ \frac{g}{l} dt \\ 0} \quad
+  D = \bmx{0 \\ 0 \\ -1} \quad
+  E = \bmx{1 & 0 & 0}
+\end{aligned}
+\end{equation}
+With the maximum torque available $\bar{\tau} = 5 N m$, the sampling time $dt = 0.02 s$ and the non-linearity $\Phi(Ex) = \text{sin}(Ex) - Ex$. We have trained a stabilizing NN controller with Reinforcement Learning (RL) structured as an MLP of $3$ layers with $n_{\phi_1} = n_{\phi_2} = n_{\phi_3} = 32$. The addition of the integrator in the system dynamics made the training less trivial and allowed to compensate the intrinsic equilibrium points given by the controller that are generally different from the origin. The output of the controller $\bar{u}$ is a scalar, the saturation level $\hat{u}$ of the last ETM (see fig. \ref{fig:second_scheme}) is set to $1$ given the nature of RL training that always normalizes the final output of the network. We solved many instances of the LMI problem by first applying the ETM with null threshold, dynamic threshold, new ETM triggering matrices found with Lemma \ref{lem:finsler} and finally the matrices that we obtained by the application of Corollary \ref{cor:optimization} observing a considerable upgrade in performances in terms of computational saving. The results are shown in the following table: 
+
+
+{\color{red}{Troppo discorsivo?}}
 
 \section{Conclusions}
 
