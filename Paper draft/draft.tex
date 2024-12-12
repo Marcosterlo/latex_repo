@@ -3,10 +3,10 @@
 \makeatletter
 \let\old@ssect\@ssect % Store how ifacconf defines \@ssect
 \makeatother
-\input{../math_commands}
-\input{../custom_imports}
+\input{math_commands}
+\input{custom_imports}
 \usepackage{natbib}
-\usepackage{booktabs}
+%\usepackage{booktabs}
 %%%put this lines in ifacconf after hyperref to use it
 \makeatletter
 \def\@ssect#1#2#3#4#5#6{%
@@ -25,18 +25,20 @@
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{problem}{Problem}
-% \newenvironment{proof}{\paragraph*{Proof:}}{\hfill$\square$}
+\newenvironment{proof}{\paragraph*{Proof:}}{\hfill$\square$}
 
 \begin{document}
 \begin{frontmatter}
 
 \title{Draft of paper}
 
-\author[First]{Sophie Tarbouriech}
+\author[First]{Marco Sterlini}
 \author[Second]{Samuele Zoboli}
-\author[Third]{Marco Sterlini}
+\author[Second]{Sophie Tarbouriech}
 
-\address[First]{LAAS-CNRS, Université de Toulouse, CNRS, Toulouse, France (e-mail:bu) }
+\address[First]{Università di Trento, Trento, Italy (e-mail: marco.sterlini@studenti.unitn.it) }
+\address[Second]{LAAS-CNRS, Université de Toulouse, CNRS, Toulouse, France (e-mail:bu) }
+
 
 \begin{abstract}
 \textbf{INSERT ABSTRACT}
@@ -133,7 +135,7 @@ with $u \in \RR^{n_u}$ the output of the controller subject to the ETM. This mod
 \end{equation}
 
 
-The system is compliant with the assumptions of \cite[Lemma 2]{css-extended} that allow us to define the following expressions regarding the equilibrium points $\left( x_*, u_*, \nu_*, \omega_* \right)$ of the system and controller given $x_*$, defining the matrices:
+The system is compliant with the assumptions of \citep[Lemma 2]{css-extended} that allow us to define the following expressions regarding the equilibrium points $\left( x_*, u_*, \nu_*, \omega_* \right)$ of the system and controller given $x_*$, defining the matrices:
 \begin{equation}
     \begin{aligned}
          R &= (\Id - N_{\nu \omega})^{-1}\\
@@ -265,7 +267,7 @@ After the implementation of the dynamic threshold a further improvement of the t
 \end{equation}
 Intuitively the lower the left-hand term of the inequality the lower will be the number of triggered events. Unfortunately $\Omega^i$ structure is non-flexible due to his strict relation with the sector condition expression. The following lemma addresses the issue by designing some triggering matrices that guarantee a lower update rate for each layer by the use of Finsler's lemma:
 
-\begin{lemma}: \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that $\bmx{\tilde{x} & \tilde{\psi}^i & \tilde{\nu}^i}\tr = R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr \to {\xi^i}\tr = R^i \xi\tr$ and assuming \eqref{eqn:incremental} holds $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists X^i \in \RR^{nx + 2n_{\phi_i} \times nx + 2n_{\phi_i}}, $ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ such that:
+\begin{lemma}: \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that $\bmx{\tilde{x} & \tilde{\psi}^i & \tilde{\nu}^i}\tr\! = \!R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr\! \to {\xi^i}\tr = R^i \xi\tr$ and assuming \eqref{eqn:incremental} holds $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists \! X^i\! \in\! \RR^{nx + 2n_{\phi_i} \times nx + 2n_{\phi_i}}, $ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ such that:
 \begin{equation}\label{eqn:finsler}
      {R^i}\tr\! He\left\{X^i - \Omega^i\right\}\! R^i + He\left\{ \smallpmat{N^i_1\\ N^i_2\\ N^i_3}\! \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0
 \end{equation}
@@ -274,7 +276,7 @@ Then we have ${\xi^i}\tr X^i \xi^i \leq {\xi^i}\tr \Omega^i \xi^i$}
 
 \begin{proof} By pre and post multiplying for $\xi$ the previous expression we end up with
 $$
-    {\xi^i}\tr\! He \!\left\{\!X^i \!- \Omega^i\right\} \xi^i + He\!\left\{ \xi\tr\! \smallpmat{N^i_1\\ N^i_2\\ N^i_3}\! \pmx{R N_{\nu x} & \Id - R & -\Id} \xi\! \right\}\! \leq 0
+    {\xi^i}\tr\! He \!\left\{\!X^i \!-\! \Omega^i\right\} \xi^i + He\!\left\{ \xi\tr\! \smallpmat{N^i_1\\ N^i_2\\ N^i_3}\! \smallpmat{R N_{\nu x} & \Id - R & -\Id} \xi\! \right\}\! \leq 0
 $$
 By expanding the term $\pmx{R N_{\nu x} & \Id - R & -\Id} \xi$ we end up with condition \eqref{eqn:incremental} meaning that the expression is reduced to
 $$
@@ -314,10 +316,10 @@ We will first introduce a more compact notation for the system dynamics as long 
     \bar{B} &= -B N_{u \omega} R\\
     \tilde{x}^+ &= \bar{A}\tilde{x} + \bar{B}\tilde{\psi} + C \tilde{\Phi}\\
 R_{\nu} &= \bmx{
-  \Id & 0 & 0 & 0\\
-  0 & Id & 0 & 0\\
-  R N_{\nu x} & \Id - R & 0 & 0\\
-} \in \RR^{n_x + 2 n_{\phi} + n_q \times n_x + 2 n_{\phi}}\\
+  \Id & 0 & 0 \\
+  0 & \Id & 0 \\
+  R N_{\nu x} & \Id - R & 0\\
+} \in \RR^{n_x + n_{\phi} + n_q \times n_x + 2 n_{\phi}}\\
 R_s &\in \RR^{n_x + n_{\phi} + n_q \times n_x + n_q}
 \end{aligned}
 \end{equation}
@@ -348,19 +350,13 @@ Then the system controlled by $\pi_{\text{ETM}}$ is locally stable around $x_*$ 
     P & {Z_j^i}\tr\\
     \star & 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}
   } \geq 0 \ \forall i \in \left\{ 1, \dots, l \right\}, j \in \left\{ 1, \dots, n_{\phi_i} \right\} \label{eqn:inclusion}\\
-  &{R^i}\tr\! He\left\{X^i - \Omega^i\right\} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler} 
+  &{R^i}\tr\! He\left\{X^i - \Omega^i\right\} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint} 
 \end{align}
 \vspace{.5em}
 \hrule
 \end{figure*}
 
-\begin{proof} We start by taking into account a candidate Lyapunov function structured as: $V = \tilde{x}\tr P \tilde{x} + He(\1_l\tr\!\boldsymbol{\eta})$. We start by commenting $R_{\nu}$ and $R_s$ in \eqref{eqn:auxiliary}: we notice how $$
-\bmx{
-\tilde{x}\\
-\tilde{\psi}\\
-\tilde{\Phi}
-}
-$$
+\begin{proof} We start by taking into account a candidate Lyapunov function structured as: $V = \tilde{x}\tr P \tilde{x} + He(\1_l\tr\!\boldsymbol{\eta})$. We start by commenting $R_{\nu}$ and $R_s$ in \eqref{eqn:auxiliary}, we notice how $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\nu}\tr}\tr = R_{\nu} \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr}\tr$. The matrix $\bmx{S & Q\\ \star & W}$ represents the quadratic sector conditions specific to $\Psi$ with respect to $\tilde{x}$ and $\tilde{\Psi}$, $R_s$ is a transformation matrix such that: $\bmx{\tilde{x}\tr & \tilde{\Psi}}\tr = R_s \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr}\tr$
 \end{proof}
 \subsection{Optimization procedure}
 
@@ -369,6 +365,6 @@ $$
 \section{Conclusions}
 
 %\bibliographystyle{plain}
-\bibliography{../biblio.bib}
+\bibliography{Bibliography/biblio}
 
 \end{document}

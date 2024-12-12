@@ -26,7 +26,7 @@ with $\hat{u}$ the lmit of the input signal, $x \in \RR^{n_x}$ the state vector,
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{img/first_scheme}
+    \includegraphics[width=0.45\textwidth]{Figures/first_scheme}
     \caption{Feedback system}
     \label{fig:first_scheme}
 \end{figure}
@@ -64,7 +64,7 @@ where
 Similarly as in \cite{css-extended} we implement an ETM in every layer of the controller, we add also a final one to the output that will be used to further reduce the total number of events and calls to the non-linear functions. The system and the controller are now described by figure \ref{fig:second_scheme}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{img/second_scheme}
+    \includegraphics[width=0.45\textwidth]{Figures/second_scheme}
     \centering
     \caption{Feedback system subject to ETM in the controller}
     \label{fig:second_scheme}
@@ -296,6 +296,7 @@ R_{\nu} = \bmx{
 \emph{Where $\hat{\nu}_j^i = \min(|-\bar{\nu}_j^i - \nu^i_{*, j}|,|\bar{\nu}_j^i - \nu^i_{*, j}|)$, $Z^i = T^i G^i,\ i \in \left\{ 1, \dots, l \right\} $}
 
 \subsection{Optimization procedure}
+$ \forall v \in \bar{S} = \left\{ v\subseteq  \in  \RR^{n_q} : - \underline{\bar{\nu}}_i \leq v_i \leq \bar{\nu}_i, i \in \pmx{1 & \dots & n_q} \right\} $
 
 \section{Simulations}
 

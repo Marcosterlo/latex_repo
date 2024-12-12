@@ -13,3 +13,4 @@ cvxpy
 relu
 LMIs
 Finsler
+NOLCOS
