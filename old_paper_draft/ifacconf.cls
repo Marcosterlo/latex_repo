@@ -612,7 +612,7 @@
     {\theorem@headerfont ##1\ ##2.}]}%
   \def\@opargbegintheorem##1##2##3{\item[\hskip\labelsep
     {\theorem@headerfont ##1\ ##2}\ {\upshape(}{\it ##3\/}{\upshape).}]}}
-\gdef\theorem@headerfont{\bfseries}%\itshape}
+\gdef\theorem@headerfont{\itshape}
 \gdef\th@plain{\upshape
   \def\@begintheorem##1##2{\item[\hskip\labelsep
     {\theorem@headerfont ##1\ ##2.}]}%

@@ -52,7 +52,7 @@
 
 \section{Introduction}
 \textbf{INSERT INTRODUCTION}\\
-\emph{Notation:} $\NN, \RR^{n}, \RR^{n \times m}$ denote the set of natural non-negative integers, the set of real vectors of dimension $n$ and the set of real matrices of dimension $n \times m$, respectively. For any matrix $A$, $A\tr$ is its transpose. For any square matrix $A$, the operator $\He{ A } = A + A\tr$ is defined. $\texttt{diag}(A_1, A_2)$ is a block-diagonal matrix with block-diagonal matrices $A_1$ and $A_2$. For a partitioned matrix, the symbol $\star$ stands for symmetric blocks. $\1_n = \bmx{1 & \dots & 1}-\tr \in \NN^{n \times 1}$
+\emph{Notation:} $\NN, \RR^{n}, \RR^{n \times m}$ denote the set of natural non-negative integers, the set of real vectors of dimension $n$ and the set of real matrices of dimension $n \times m$, respectively. For any matrix $A$, $A\tr$ is its transpose. For any square matrix $A$, the operator $\He{ A } = A + A\tr$ is defined. $\texttt{diag}(A_1, A_2)$ is a block-diagonal matrix with block-diagonal matrices $A_1$ and $A_2$. For a partitioned matrix, the symbol $\star$ stands for symmetric blocks. $\1_n = \bmx{1 & \dots & 1}\tr \in \NN^{n \times 1}$. We identify with subscript $i$ the $i$-th element of a vector or the $i$-th row of a matrix.
 
 \section{Problem Formulation}
 We consider the non-linear discrete-time system stabilized by a Neural Network (NN) controller represented in figure \ref{fig:first_scheme} described by:
@@ -63,7 +63,16 @@ where the saturation function \texttt{sat} is defined as:
 $$
     \texttt{sat}(\bar{u}) = \texttt{sign}(\bar{u})\text{min}(|\bar{u}|, \hat{u})
 $$
-with $\hat{u}$ the lmit of the input signal, $x \in \RR^{n_x}$ the state vector, $\bar{u} \in \RR^{n_u}$ the raw output of the controller, $\Phi$ the representation of the non-linearity of the system \textcolor{red}{Please help in adding details about $\Phi$ since it's NOLCOS} and $d \in \RR^{n_d}$ a constant disturbance input.
+with $\hat{u}$ the limit of the input signal, $x \in \RR^{n_x}$ the state vector, $\bar{u} \in \RR^{n_u}$ the raw output of the controller, $d \in \RR^{n_d}$ a constant disturbance input  and $\Phi \in \RR^{n_q}$ the representation of the non-linearity of the system. 
+\begin{assumption}\label{ass:nonlin}
+We assume that $\Phi$ satisfies some local quadratic abstraction for some $\underline{\mu}, \bar{\mu} > 0 \in \RR^{n_q}, \bar{S}, \bar{Q}, \bar{W} \in \RR^{n_q \times n_q}$
+\begin{equation}\label{eqn:nonlin-set}
+\forall v \in \bar{S} = \left\{ v \in  \RR^{n_q} : - \underline{\mu}_i \leq v_i \leq \bar{\mu}_i, i \in \pmx{1 & \dots & n_q} \right\} 
+\end{equation}
+\begin{equation}\label{eqn:nonlin-inclusion}
+\bmx{x \\ \Phi(x)}\tr \bmx{\bar{S} & \bar{Q} \\ \star & \bar{W}} \bmx{x \\ \Phi(x)} \geq 0
+\end{equation}
+\end{assumption}\textcolor{red}{Please help in adding details about $\Phi$ since it's NOLCOS}.
 
 \begin{figure}[H]
     \centering
@@ -73,25 +82,25 @@ with $\hat{u}$ the lmit of the input signal, $x \in \RR^{n_x}$ the state vector,
 \end{figure}
 
 The controller is implemented as a Multi Layer Perceptron (MLP) with $l$ layers, each with $n_{\phi_i}, i \in \left\{ 1, \dots, l\right\}$ neurons, all activation functions are saturation functions, represented by $\phi_i$. The objective is to design an Event-Triggering Mechanism (ETM) that allows to ease the computational burden associated with the computation of many non-linear activation functions providing at the same time sufficient sector conditions to handle the non-linearity of the system and the controller. The controller $\pi$ is defined by:
-\begin{equation}\label{eq:nn-equations}
+\begin{equation}\label{eqn:nn-equations}
   \begin{aligned}
-  \omega^{0}(k) &= x(k) \\
-  \nu^{i}(k) &= W^{i} \omega^{i - 1}(k) + b^{i}, i \in \left\{ 1, \dots, l \right\}\\
+  \hat{\omega}^{0}(k) &= x(k) \\
+  \nu^{i}(k) &= W^{i} \hat{\omega}^{i - 1}(k) + b^{i}, i \in \left\{ 1, \dots, l \right\}\\
   \omega^{i}(k) &= \phi_i(\nu^i(k))\\
   \bar{u}(k) &= \phi_l(\nu^l(k))
   \end{aligned} 
 \end{equation}
-with $\nu^i(k) \in \RR^{n_{\phi_i}}$ the input to the $i$-th activation function $\phi_i: \RR^{n_{\phi_i}} \to \RR^{n_{\phi_i}}$, $\omega^i(k) \in \RR^{n_{\phi_i}}$ the output. The weights $W^i \in \RR^{n_{\phi_i} \times n_{\phi_{i-1}}}$ and biases $b^i \in \RR^{n_{\phi_i}}$ define the affine operation of each layer. The saturation function application is to be intended element-wise and will be denoted as $\phi_i(\nu^i(k)) = \left[ \varphi(\nu^i_1(k)), \dots, \varphi(\nu^i_{n_{\phi_i}}(k)) \right]$ and $\varphi: \RR \to \RR$ is the scalar activation function assumed to be symmetric and identical for every neuron. Adopting the same notation as in \cite{css-paper} we define the controller policy in a condensed form. Denoting the augmented vectors:
+with $\nu^i(k) \in \RR^{n_{\phi_i}}$ the input to the $i$-th activation function $\phi^i: \RR^{n_{\phi_i}} \to \RR^{n_{\phi_i}}$, $\omega^i(k), \hat{\omega}^i(k) \in \RR^{n_{\phi_i}}$ the current and last forwarded output respectively. The weights $W^i \in \RR^{n_{\phi_i} \times n_{\phi_{i-1}}}$ and biases $b^i \in \RR^{n_{\phi_i}}$ define the affine operation of each layer. The saturation function application is to be intended element-wise and will be denoted as $\phi^i(\nu^i(k)) = \left[ \varphi(\nu^i_1(k)), \dots, \varphi(\nu^i_{n_{\phi_i}}(k)) \right]$ and $\varphi: \RR \to \RR$ is the scalar activation function assumed to be symmetric and identical for every neuron. Adopting the same notation as in \cite{css-paper} we define the controller policy in a condensed form. Denoting the augmented vectors:
 \begin{equation*}
-  \nu = \bmx{\nu^1 \\ \vdots \\ \nu^l}, \omega = \bmx{\omega^1 \\ \vdots \\ \omega^l}, \phi = \bmx{\phi_1(\nu^1) \\ \vdots \\ \phi_l(\nu^l)} 
+  \nu = \bmx{\nu^1 \\ \vdots \\ \nu^l}, \omega = \bmx{\omega^1 \\ \vdots \\ \omega^l}, \phi = \bmx{\phi^1(\nu^1) \\ \vdots \\ \phi^l(\nu^l)} 
 \end{equation*}
-with $n_{\phi} = \sum_{i=1}^{l} n_{\phi_i}$ and $\phi: \RR^{n_{\phi}} \to \RR^{n_{\phi}}$ the combined non-linearity we have $\omega = \phi(\nu)$. Finally, conditions \eqref{eq:nn-equations} can be rewritten as:
+with $n_{\phi} = \sum_{i=1}^{l} n_{\phi_i}$ and $\phi: \RR^{n_{\phi}} \to \RR^{n_{\phi}}$ the combined non-linearity we have $\omega = \phi(\nu)$. Finally, conditions \eqref{eqn:nn-equations} can be rewritten as:
 \begin{equation*}
-  \bmx{u(k)\\ \nu(k)} = N \bmx{x(k) \\ \omega(k) \\ 1} 
+  \bmx{u(k)\\ \nu(k)} = \overbar N \bmx{x(k) \\ \omega(k) \\ 1} 
 \end{equation*}
 where
-\begin{equation}\label{eq:first-N}
-  \bmx{
+\begin{equation}\label{eqn:first-N}
+  \overbar N = \bmx{
     \begin{array}{c | c c c c | c}
       \0 & \0 & \dots & \0 & W^l & b^l \\ 
       \hline
@@ -111,11 +120,11 @@ Similarly as in \cite{css-extended} we implement an ETM in every layer of the co
     \label{fig:second_scheme}
 \end{figure}
 The dynamics will be rewritten as:
-\begin{equation}\label{eq:system-dynamics}
+\begin{equation}\label{eqn:system-dynamics}
   x^{+} = A x + B u + C \Phi(E x) + D d
 \end{equation}
-with $u \in \RR^{n_u}$ the output of the controller subject to the ETM. This modification required to redefine the matrix $N$ defined in the controller policy \eqref{eq:first-N} as:
-\begin{equation}\label{eq:last-N}
+with $u \in \RR^{n_u}$ the output of the controller subject to the ETM. This modification required to redefine the matrix $N$ defined in the controller policy \eqref{eqn:first-N} as:
+\begin{equation}\label{eqn:last-N}
   N = \bmx{
     \begin{array}{c | c c c c | c}
       \0 & \0 & \dots & \0 & \Id & 0 \\ 
@@ -138,13 +147,13 @@ with $u \in \RR^{n_u}$ the output of the controller subject to the ETM. This mod
 The system is compliant with the assumptions of \citep[Lemma 2]{css-extended} that allow us to define the following expressions regarding the equilibrium points $\left( x_*, u_*, \nu_*, \omega_* \right)$ of the system and controller given $x_*$, defining the matrices:
 \begin{equation}
     \begin{aligned}
-         R &= (\Id - N_{\nu \omega})^{-1}\\
-         R_{\omega} &= N_{u x} + N_{u \omega} R N_{\nu x}\\
-         R_b &= N_{u \omega} R N_{\nu b} + N_{u b}
+         &R = (\Id - N_{\nu \omega})^{-1}\\
+         &R_{\omega} = N_{u x} + N_{u \omega} R N_{\nu x}\\
+         &R_b = N_{u \omega} R N_{\nu b} + N_{u b}
     \end{aligned}
 \end{equation}
 
-With $N_{\nu \omega}$ always invertible due to its lower triangular structure. We find the equilibrium of the state by the use of a numerical solver that minimizes the following expression since it is no longer explicit due to the non-linearity $\Phi$. Given a constant disturbance $\bar{d}$:
+With $R$ always invertible due to $N_{\nu \omega}$ always invertible due to its lower triangular structure. We find the equilibrium of the state by the use of a numerical solver that minimizes the following expression since it is no longer explicit due to the non-linearity $\Phi$. Given a constant disturbance $\bar{d}$:
 \begin{equation}
   x_* = \min_{x} \left[(A + B R_{\omega} - \Id) x + C \Phi(E x) + D \bar{d} + B R_b \right]
 \end{equation}
@@ -156,25 +165,34 @@ With $N_{\nu \omega}$ always invertible due to its lower triangular structure. W
     u_* &= R_{\omega} x_* + R_b
   \end{aligned}
 \end{equation}
-All the non-linearity of the system and the controller are selected as saturation functions. With respect to \citep[Lemma 3]{css-extended}, we declare the local sector conditions that hold for this function:
+All the non-linearity of the system and the controller are selected as saturation functions. With respect to \citep[Lemma 3]{css-extended}, we declare the local sector conditions that hold for every state included in the following set:
 
-\emph{For $i \in \left\{ 1, \dots, l \right\}$ given a matrix $G^i \in \RR^{n_{\phi_i} \times n_x}$, if $x(k)$ belongs to the set}
-$$
-S^i = \left\{ x(k) \in \RR^{n_x} : -\bar{\nu}^i - \bar{\nu}_* \leq G^i (x(k) - x_*) \leq \bar{\nu}^i - \nu_*^i \right\} 
-$$
+\begin{remark}\label{rem:sec-set}
+\emph{For $i \in \left\{ 1, \dots, l \right\}$ given a matrix $G^i \in \RR^{n_{\phi_i} \times n_x}$, if $x$ belongs to the set}
+\begin{equation}\label{eqn:inclusion-set}
+S = \left\{ x \in \RR^{n_x} : -\bar{\nu}^i - \bar{\nu}^i_* \leq G^i (x - x_*) \leq \bar{\nu}^i - \nu_*^i \right\} 
+\end{equation}
 
 \emph{Then the following quadratic constraint holds for any diagonal positive definite matrix $T^i \in \RR^{n_{\phi_i} \times n_{\phi_i}}$:}
 \begin{equation}\label{eqn:first_sec_cond}
-  \left[ \nu^i(k) - \omega^i(k) \right]\tr T^i \left[ G^i (x(k) - x_*) - (\omega^i(k) - \omega^i_*) \right] \leq 0
-\end{equation}
+  \left[ \nu^i - \omega^i \right]\tr T^i \left[ G^i (x - x_*) - (\omega^i - \omega^i_*) \right] \leq 0
+\end{equation}\end{remark}
 Where $\bar{\nu}^i$ is the saturation level of the $i$-th layer.
 
-\textcolor{red}{Proof needed?}
-
-In order to have a lighter notation the dead-zone vector  will be defined as $\psi = \nu - \omega$. Furthermore, all following discussions will take into account incremental variables with respect to their equilibrium, denoted with a tilde, i.e. $\tilde{x} = x - x_*$. Considering \eqref{eqn:equilibrium} we have $\psi_* = \nu_* - \omega_* = 0$ hence $\tilde{\psi} = \psi$. The sector condition \eqref{eqn:first_sec_cond} can be rewritten with no loss of generality as:
+In order to have a lighter notation the dead-zone vector  will be defined as $\psi^i = \nu^i - \omega^i$ and $\hat{\psi}^i = \nu^i - \hat{\omega}^i$. Furthermore, all following discussions will take into account incremental variables with respect to their equilibrium, denoted with a tilde, i.e. $\tilde{x} = x - x_*$. Considering \eqref{eqn:equilibrium} we have $\psi_* = \nu_* - \omega_* = 0$ hence $\tilde{\psi} = \psi$. We define $\xi^i = \bmx{\tilde{x}\tr & \tilde{\psi}_i\tr & \tilde{\nu}_i\tr}\tr$ and $\hat{\xi}^i = \bmx{\tilde{x}\tr & \hat{\tilde{\psi}}_i\tr & \tilde{\nu}_i\tr}\tr$, then the overall sector conditions \eqref{eqn:first_sec_cond} can be rewritten with no loss of generality $\forall i \in \pmx{1 & \dots & l}$ as:
 \begin{equation}\label{eqn:sec_cond}
-  \tilde{\psi}\tr T^i \left[ G^i \tilde{x} + \tilde{\psi} - \tilde{\nu} \right] \leq 0
+\begin{aligned}
+    &({\tilde{\psi}^i})\tr T^i \bmx{G^i \tilde{x} + \tilde{\psi}^i - \tilde{\nu}^i} = {\xi^i}\tr \bmx{0 & 0 & 0\\
+    T^i G^i & T^1 & -T^1\\
+    0 & 0 & 0} \xi^i = \\
+    &= {\xi^i}\tr \Omega^i \xi^i \leq 0
+\end{aligned}
 \end{equation}
+
+\begin{remark}\label{rem:sec-cond}
+Note how ensuring ${\xi^i}\tr \Omega^i \xi^i < 0$ guarantees that the sector condition \eqref{eqn:sec_cond} holds.
+\end{remark}
+
 We can express now the new inter-dependency between the variables of interest:
 \begin{equation}\label{eqn:incremental}
   \begin{aligned}
@@ -188,86 +206,53 @@ We can express now the new inter-dependency between the variables of interest:
 Taking inspiration from \citep[Proposition 1, Lemma 3]{css-extended} we design the ETM for the output of each layer of the controller and the final output.
 
 \subsection{Event-triggering mechanism}
-An ETM works by triggering an event that will update the current layer and propagate its value across the network. The triggering function will take as inputs the incremental variables of the state of the system 
-$\tilde{x}$, the current state of the layer $\tilde{\nu}$ and the dead-zone vector $\tilde{\psi}$. The ETM was defined as:
+An ETM works by triggering an event that will update the current layer and propagate its value across the network. 
+In the precedent work \cite{css-extended} the triggering function is defined on the basis of the saturation sector conditions in the form \eqref{eqn:sec_cond}. The ETM was defined as:
 \begin{equation}
-  \omega^{i}(k) = \begin{cases}
-    \phi_i(\nu^i(k)) & \text{if } f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > 0\\
-    \omega^{i}(k-1) & \text{otherwise}
+  \hat{\omega}^{i}(k) = \begin{cases}
+    \phi^i(\nu^i(k)) & \text{if } {\hat{\xi^i}}\tr \Omega^i \hat{\xi^i} > 0\\
+    \hat{\omega}^{i}(k-1) & \text{otherwise}
   \end{cases}
 \end{equation}
-In the precedent work \cite{css-extended} the function $f$ is defined on the basis of the saturation sector conditions in the following quadratic form with respect to \eqref{eqn:sec_cond}:
-\begin{equation}\label{eqn:base_omega}
-  f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) =
-  \bmx{\tilde{x}\\ \tilde{\psi} \\ \tilde{\nu}}\tr
-  \Omega^i
-  \bmx{\tilde{x}\\ \tilde{\psi} \\ \tilde{\nu}} > 0
-\end{equation}
-With $$
-\Omega^i =  \bmx{
-    0 & 0 & 0\\
-    T^i G^i & T^i & -T^i\\
-    0 & 0 & 0
-  } 
-$$
 
 This approach acts as a static ETM triggering an event immediately after the sector conditions are violated. Inspired by the work of \cite{data-driven} we define a dynamic quantity to be implemented in the ETM triggering condition. The idea is to lower the conservatism of the controller by introducing a time-varying threshold that will adapt to the current state of the system and controller reducing the overall number of events and computational burden. The new triggering function for the new \emph{dynamic-ETM} for the $i$-th layer is defined as:
 \begin{equation}\label{eqn:dynamic_trig}
-  \omega^{i}(k) = \begin{cases}
-    \phi_i(\nu^i(k)) & \text{if } f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > \rho^i \eta_i\\
-    \omega^{i}(k-1) & \text{otherwise}
+  \hat{\omega}^{i}(k) = \begin{cases}
+    \phi^i(\nu^i(k)) & \text{if } {\hat{\xi^i}}\tr \Omega^i \hat{\xi^i} > \rho^i \eta_i\\
+    \hat{\omega}^{i}(k-1) & \text{otherwise}
   \end{cases};
 \end{equation}
 
 Where $\eta^i$ characterized by the following dynamics:
 \begin{equation}\label{eqn:eta_dynamics}
-  \eta^+_i = \rho^i \eta_i - f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu})\  \forall i \in \left( 1, \dots, l \right) 
+  {\eta^i}^+ = \rho^i \eta^i - {\hat{\xi^i}}\tr \Omega^i \hat{\xi^i}\quad  \forall i \in \left( 1, \dots, l \right) 
 \end{equation}
-
-\begin{remark} \emph{Similarly as in \citep[Lemma 3]{data-driven} we will demonstrate how $\eta^i_k$ being the dynamic threshold of layer $i$ at time instant $k$ is non-negative for any $\rho^i \in [0, 1)$, $\eta^i_0 \geq\ \forall k \in \NN$} \end{remark}
-
-\begin{proof} We consider the dynamics \eqref{eqn:eta_dynamics} and the ETM triggering rule \eqref{eqn:dynamic_trig} we prove the remark by recursion:\\
-\emph{Initial condition}: Assuming $\eta^i_0 \geq 0$ we may have two possible outcomes:
-if $f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) < \rho^i \eta^i_0$ we have that 
-\begin{equation}
-  f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) < \rho^i \eta^i_0 \to \rho^i \eta^i_0 - f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) = \eta^i_1 \geq 0
-\end{equation}
-
-If instead $f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > \rho^i \eta^i_0$ then the event is triggered and the values of the current layer state $(\tilde{\psi}, \tilde{\nu})$ are updated to $(\bar{\psi}, \bar{\nu})$, leading again to the first case scenario where $f^i(\tilde{x}, \bar{\psi}, \bar{\nu}) < \rho^i \eta^i_0 \to \eta^i_1 \geq 0$.\\
-\emph{Recursion step}: Assuming $\eta^i_k \geq 0$ similarly as the initial condition we may have:
-$$
-f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) < \rho^i \eta^i_k \to \rho^i \eta^i_k - f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) = \eta^i_{k+1} \geq 0
-$$
-If $f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > \rho^i \eta^i_k$ once again the event is triggered, we update $(\tilde{\psi}, \tilde{\nu}) \to (\bar{\psi}, \bar{\nu})$, the triggering function switches sign $f^i(\tilde{x}, \bar{\psi}, \bar{\nu}) < \rho^i \eta^i_k \to \eta^i_{k+1} \geq 0$.\\
-Hence, $\eta^i_k \geq 0$ implies $\eta^i_{k+1} \geq 0$ concluding the recursion proof. \end{proof}
-\textcolor{red}{Is the recursion really necessary? Can't I just do the proof for any k?}
-
 
 We denote a condensed notation by taking into account all conditions for each layer
 \begin{equation}
 \begin{aligned}
    \bR &= \text{diag} \pmx{\rho^1 & \dots & \rho^l }\\
-   \mathbf{\Psi} &= \text{diag} \pmx{ f^1 & \dots & f^l }\\ 
-   \boldsymbol{\eta} &= \bmx{ {\eta^1}\tr & \dots & {\eta^l}\tr }\tr   
+   \mathbf{\Psi} &= \bmx{ {\hat{\xi^1}}\tr \Omega^1 \hat{\xi^1} & \dots & {\hat{\xi^l}}\tr \Omega^l \hat{\xi^l}}\tr\\
+   \boldsymbol{\eta} &= \bmx{ \eta^1 & \dots & \eta^l}\tr   
 \end{aligned}
 \end{equation}
 
 The ETM triggering condition and dynamic thresholds' dynamics can be rewritten in an element-wise fashion as:
 \begin{equation}
 \begin{aligned}
-    \boldsymbol{\eta}^+ &= \bR \boldsymbol{\eta} - \mathbf{\Psi} \1_l\\
-    \mathbf{\Psi} \1_l &> \bR \boldsymbol{\eta}
+    \boldsymbol{\eta}^+ &= \bR \boldsymbol{\eta} - \mathbf{\Psi}\\
+    \mathbf{\Psi} &> \bR \boldsymbol{\eta}
 \end{aligned}
 \end{equation}
 
 \subsection{Finsler Lemma application}
-After the implementation of the dynamic threshold a further improvement of the triggering condition has been taken in consideration. More precisely by denoting $\xi^i = (\tilde{x}, \tilde{\psi}^i, \tilde{\nu}^i)$ we rewrite the even triggering condition $f^i(\tilde{x}, \tilde{\psi}, \tilde{\nu}) > \rho^i \eta^i$ by taking in consideration \eqref{eqn:base_omega} as 
-\begin{equation}
-    {\xi^i}\tr \Omega^i \xi^i > \rho^i \eta^i
-\end{equation}
+After the implementation of the dynamic threshold a further improvement of the triggering condition has been taken in consideration. By recalling the triggering condition:
+$$
+\hat{{\xi^i}}\tr \Omega^i \hat{\xi^i} > \rho^i \eta^i
+$$
 Intuitively the lower the left-hand term of the inequality the lower will be the number of triggered events. Unfortunately $\Omega^i$ structure is non-flexible due to his strict relation with the sector condition expression. The following lemma addresses the issue by designing some triggering matrices that guarantee a lower update rate for each layer by the use of Finsler's lemma:
 
-\begin{lemma}: \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that $\bmx{\tilde{x} & \tilde{\psi}^i & \tilde{\nu}^i}\tr\! = \!R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr\! \to {\xi^i}\tr = R^i \xi\tr$ and assuming \eqref{eqn:incremental} holds $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists \! X^i\! \in\! \RR^{nx + 2n_{\phi_i} \times nx + 2n_{\phi_i}}, $ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ such that:
+\begin{lemma}\label{lem:finsler}: \emph{Considering the triggering policy \eqref{eqn:dynamic_trig}, $R^i$ such that ${\xi^i}\tr = \!R^i \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr\! = R^i \xi\tr$, with reference to the structure in \eqref{eqn:sec_cond} and assuming \eqref{eqn:incremental} holds for some $\underline{\xi}, \bar{\xi} \in \RR^{n_x + 2n_{\phi}}$ such that $\forall \xi \in \left[ \underline{\xi}, \bar{\xi}\right]$, if $\exists X^i \in\! \RR^{(nx + 2n_{\phi_i}) \times (nx + 2n_{\phi_i})},$ $N^i_1 \in \RR^{n_x \times n_{\phi_i}}, N^i_2, N^i_3 \in \RR^{n_{\phi_i} \times n_{\phi_i}}$ a diagonal matrix $T^i > 0 \in \RR^{n_{\phi_i} \times n_{\phi_i}}, G^i \in \RR^{n_{\phi_i} \times n_x}$ such that:
 \begin{equation}\label{eqn:finsler}
      {R^i}\tr\! He\left\{X^i - \Omega^i\right\}\! R^i + He\left\{ \smallpmat{N^i_1\\ N^i_2\\ N^i_3}\! \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0
 \end{equation}
@@ -280,7 +265,7 @@ $$
 $$
 By expanding the term $\pmx{R N_{\nu x} & \Id - R & -\Id} \xi$ we end up with condition \eqref{eqn:incremental} meaning that the expression is reduced to
 $$
-    {\xi^i}\tr He(X^i - \Omega^i) \xi^i \leq 0
+    {\xi^i}\tr \He{X^i - \Omega^i} \xi^i \leq 0
 $$
 By further expanding the expression and considering that it is eventually reduced to a scalar for which it holds that the transpose is equivalent to itself we obtain:  
 \begin{equation*}
@@ -293,17 +278,27 @@ By further expanding the expression and considering that it is eventually reduce
 \end{proof}
 
 Assuming we have the $X^i$ matrices $i \in \left\{1, \dots, l \right\}$ we rewrite the triggering conditions for each layer:
-\begin{equation}
-  \omega^{i}(k) = \begin{cases}
-    \phi_i(\nu^i(k)) & \text{if } {\xi^i}\tr X^i \xi > \rho^i \eta^i(k)\\
-    \omega^{i}(k-1) & \text{otherwise}
+\begin{equation}\label{eqn:etm-trigger}
+  \hat{\omega}^{i}(k) = \begin{cases}
+    \phi^i(\nu^i(k)) & \text{if } {\xi^i}\tr X^i \xi > \rho^i \eta^i(k)\\
+    \hat{\omega}^{i}(k-1) & \text{otherwise}
   \end{cases}
 \end{equation}
-By denoting $\bX = \text{diag} \pmx{{R^1}\tr X^1 R^1 & \dots & {R^l}\tr X^l R^l}$, the ETM triggering condition and dynamic thresholds' dynamics can be rewritten in an element-wise fashion as:
+\begin{remark}\label{rem:eta-positive} \emph{Similarly as in \citep[Lemma 3]{data-driven} it is possible to demonstrate how $\eta^i$ being the dynamic threshold of layer $i$ is always non-negative for any $\rho^i \in [0, 1)$, $\eta^i_0 \geq\ 0$} \end{remark}
+With respect to \eqref{eqn:etm-trigger} and \eqref{eqn:eta_dynamics} we have two possible occurrences:
+\begin{itemize}
+    \item $\hat{{\xi^i}}\tr X^i \hat{\xi^i} \leq \rho^i \eta^i$: it's trivial to verify that ${\eta^i}^+ = \rho^i \eta^i - \hat{{\xi^i}}\tr X^i \hat{\xi^i} \geq 0 $
+    \item $\hat{\xi^i}\tr X^i \hat{\xi^i} > \rho^i \eta^i$: in this case an event is triggered and the vector $\hat{\xi^i}$ gets updated to $\xi^i$ after the activation function application, in this situation \eqref{eqn:sec_cond} is met and with respect to remark \ref{rem:sec-cond} and Lemma \ref{lem:finsler} we have ${\xi^i}\tr X^i \xi^i < {\xi^i}\tr \Omega^i \xi^i < 0$. Once again we have ${\eta^i}^+ = \rho^i \eta^i - {\xi^i}\tr X^i \xi^i > 0 $
+\end{itemize}
+By denoting $\bX = \text{diag} \pmx{R_1\tr X^1 R_1 & \dots & R_l\tr X^l & R_l} $ and $\xi = \bmx{\tilde{x} & \tilde{\psi} & \tilde{\nu}}\tr$
+$$
+\mathbf{\Psi_x} = \pmx{\Id_l \otimes \xi}\tr\! \bX \pmx{\1_l \otimes \xi}
+$$
+the ETM triggering condition and dynamic thresholds' dynamics can be rewritten in an element-wise fashion as:
 \begin{equation}
 \begin{aligned}
-    \boldsymbol{\eta}^+ &= \bR \boldsymbol{\eta} - \bX \1_l\\
-    \bX \1_l&> \bR \boldsymbol{\eta}\end{aligned}
+    \boldsymbol{\eta}^+ &= \bR \boldsymbol{\eta} - \mathbf{\Psi_x}\\
+    \mathbf{\Psi_x} &> \bR \boldsymbol{\eta}\end{aligned}
 \end{equation}
 
 \subsection{Lyapunov conditions}
@@ -319,18 +314,15 @@ R_{\nu} &= \bmx{
   \Id & 0 & 0 \\
   0 & \Id & 0 \\
   R N_{\nu x} & \Id - R & 0\\
-} \in \RR^{n_x + n_{\phi} + n_q \times n_x + 2 n_{\phi}}\\
-R_s &\in \RR^{n_x + n_{\phi} + n_q \times n_x + n_q}
+} \in \RR^{(n_x + n_{\phi} + n_q) \times (n_x + 2 n_{\phi})}\\
+R_s &\in \RR^{(n_x + n_{\phi} + n_q) \times (n_x + n_q)}
 \end{aligned}
 \end{equation}
 
-\begin{theorem} \emph{ Consider the control system in \eqref{eq:system-dynamics} and the controller $\pi_{\text{ETM}}$ in \eqref{eq:nn-equations}. Assuming the existence of the matrices $P = P\tr > 0 \in \RR^{n_x \times n_x}$,} $T = \text{diag} \pmx{T^1 & \dots & T^l} \in \RR^{n_{\phi} \times n_{\phi}} > 0$, \emph{$Z = \smallpmat{{Z^1}\tr & \dots & {Z^l}\tr}\tr \in \RR^{n_{\phi} \times n_x}$, $\bR > 0$, $\bX$, $N^i_1, N^i_2, N^i_3 \ i \in \left\{ 1, \dots, l \right\}$, $S \in \RR^{n_x \times n_x}, Q \in \RR^{n_x \times n_q}, W \in \RR^{n_q \times n_q}$ and a scalar $\alpha > 0$ such that the matrix inequalities \eqref{eqn:lyapunov}, \eqref{eqn:inclusion}, \eqref{eqn:finsler} hold, where $\hat{\nu}_j^i = \min(|-\bar{\nu}_j^i - \nu^i_{*, j}|,|\bar{\nu}_j^i - \nu^i_{*, j}|)$, $Z^i = T^i G^i,\ i \in \left\{ 1, \dots, l \right\}$\\
-Then the system controlled by $\pi_{\text{ETM}}$ is locally stable around $x_*$ and the set $\cE(P, x_*) = \left\{ x \in \RR^{n_x} : \tilde{x}\tr P \tilde{x} \leq 1\right\}$ is an estimate of the ROA.}
-\end{theorem}
-
 \begin{figure*}
+\begin{subequations}\label{eqn:LMI}
 \begin{align}\label{eqn:lyapunov}
-  &\bmx{
+  &\Xi =\bmx{
   \begin{array}{c|c}
   \bmx{\bar{A}\tr\\
   \bar{B}\tr\\
@@ -339,10 +331,11 @@ Then the system controlled by $\pi_{\text{ETM}}$ is locally stable around $x_*$ 
   P & 0 & 0\\
   0 & 0 & 0\\
   0 & 0 & 0
-  } + R_s\tr \bmx{
+  } - (\1_l \otimes R_{\nu})\tr \He{\bX} (\1_l \otimes R_{\nu})
+   + R_s\tr \bmx{
     S & Q\\
     \star & W
-  }  R_s - (\1_l \otimes R_{\nu})\tr He(\bX) (\1_l \otimes R_{\nu}) \hspace{.1em}& 0\\[1.5em]
+  }  R_s\hspace{.1em}& 0\\[1.5em]
 \hline \\[-0.9em]
   0 & \hspace{.1em} 2 (\bR - \Id)
   \end{array}} < 0\\
@@ -350,13 +343,106 @@ Then the system controlled by $\pi_{\text{ETM}}$ is locally stable around $x_*$ 
     P & {Z_j^i}\tr\\
     \star & 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}
   } \geq 0 \ \forall i \in \left\{ 1, \dots, l \right\}, j \in \left\{ 1, \dots, n_{\phi_i} \right\} \label{eqn:inclusion}\\
-  &{R^i}\tr\! He\left\{X^i - \Omega^i\right\} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint} 
+  &{R^i}\tr\! He\left\{X^i - \Omega^i\right\} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint}\\
+  &\bmx{P & {E_i}\tr \\ \star & \hat{\mu_i}^2} \geq 0 \forall i \in \left\{1, \dots, n_q \right\} \label{eqn:nonlin-inclusion-constraint}
 \end{align}
+\end{subequations}
+\vspace{.5em}
+\hrule
+\end{figure*}
+\begin{figure*}
+\begin{equation}\label{eqn:first-step}
+ \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}\tr \left( \!
+  \bmx{\bar{A}\tr\\
+  \bar{B}\tr\\
+  C\tr
+  } P \bmx{\bar{A} & \bar{B} & C} - \bmx{
+  P & 0 & 0\\
+  0 & 0 & 0\\
+  0 & 0 & 0
+  } \right) \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}
+ - \pmx{\1_l \otimes \xi}\tr \bx \pmx{\1_l \otimes \xi}
+ + \bmx{\tilde{x}\\ \tilde{\Phi}}\tr\! \bmx{S & Q\\ \star & W} \bmx{\tilde{x} \\ \tilde{\Phi}}
+ + \sqrt{\boldsymbol{\eta}}\tr \He{\bR - \Id} \sqrt{\boldsymbol{\eta}}
+\end{equation}
 \vspace{.5em}
 \hrule
 \end{figure*}
 
-\begin{proof} We start by taking into account a candidate Lyapunov function structured as: $V = \tilde{x}\tr P \tilde{x} + He(\1_l\tr\!\boldsymbol{\eta})$. We start by commenting $R_{\nu}$ and $R_s$ in \eqref{eqn:auxiliary}, we notice how $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\nu}\tr}\tr = R_{\nu} \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr}\tr$. The matrix $\bmx{S & Q\\ \star & W}$ represents the quadratic sector conditions specific to $\Psi$ with respect to $\tilde{x}$ and $\tilde{\Psi}$, $R_s$ is a transformation matrix such that: $\bmx{\tilde{x}\tr & \tilde{\Psi}}\tr = R_s \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr}\tr$
+\begin{theorem}\label{thm:stability} \emph{ Consider the control system in \eqref{eqn:system-dynamics} and the controller $\pi_{\text{ETM}}$ in \eqref{eqn:nn-equations}. Assuming the existence of the matrices $P = P\tr > 0 \in \RR^{n_x \times n_x}$,} $T = \text{diag} \pmx{T^1 & \dots & T^l} \in \RR^{n_{\phi} \times n_{\phi}} > 0$, \emph{$Z = \smallpmat{{Z^1}\tr & \dots & {Z^l}\tr}\tr \in \RR^{n_{\phi} \times n_x}$, $\bR > 0$, $\bX$, $N^i_1, N^i_2, N^i_3 \ \forall i \in \left\{ 1, \dots, l \right\}$, $S \in \RR^{n_x \times n_x}, Q \in \RR^{n_x \times n_q}, W \in \RR^{n_q \times n_q}$ and a scalar $\alpha > 0$ such that the matrix inequalities \eqref{eqn:lyapunov}, \eqref{eqn:inclusion}, \eqref{eqn:finsler} hold, where $\hat{\nu}_j^i = \min(|-\bar{\nu}_j^i - \nu^i_{*, j}|,|\bar{\nu}_j^i - \nu^i_{*, j}|)$, $
+\hat{\mu}_i = \min(|-\underline{\mu}_i - v_i^*|,|\bar{\mu}_i - v_i^*|)$ and $G^i = (T^i)^{-1} Z^i\ \forall i \in \left\{1, \dots, l \right\}$
+Then the point $(x, \boldsymbol{\eta}) = (x_*, \0)$ is Locally Exponentially Stable (LES) with a ROA that includes the ellipsoid $\cE(P, x_*) = \left\{ x \in \RR^{n_x}, \boldsymbol{\eta} \in \RR^{l} : \tilde{x}\tr P \tilde{x} + \He{\1_l\tr \boldsymbol{\eta}} \leq 1\right\}$}
+\end{theorem}
+
+
+\begin{proof}
+By exploiting the inequality $$\bmx{\alpha (\hat{\nu}^i_j)^{-2} - T^i_{j, j}}(\hat{\nu}^i_j)^2\bmx{\alpha (\hat{\nu}^i_j)^{-2} - T^i_{j, j}} \geq 0$$ having $(T^i_{j,j})^2(\hat{\nu}^i_j)^2 \geq 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}$ and assuming \eqref{eqn:inclusion} we state:
+$$
+\bmx{
+P & (T^i_{j,j} G^i_j)\tr\\
+\star & (T^i_{j,j})^2(\hat{\nu}^i_j)^2
+} \geq 
+\bmx{
+P & {Z_j^i}\tr\\
+\star & 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}
+} \geq 0
+$$
+That implies
+$$
+\bmx{
+P & 0 & (T^i_{j,j} G^i_j)\tr\\
+0 & 2 \Id & 0\\
+\star & 0 &(T^i_{j,j})^2(\hat{\nu}^i_j)^2
+} \geq 0
+$$
+We initially assume the positivity of $\boldsymbol{\eta}$, by pre and post multiplying for $\bmx{\tilde{x}\tr, \sqrt{\boldsymbol{\eta}}, 1}\tr$ and its transpose and applying Schur's complement we obtain
+$$
+\bmx{\tilde{x}\\ \sqrt{\boldsymbol{\eta}}}\tr \bmx{P & 0\\ 0 & 2 \Id} \bmx{\tilde{x}\\ \sqrt{\boldsymbol{\eta}}} \geq \tilde{x}\tr \frac{(G^i_j)\tr (G^i_j)}{\hat{\nu^i_j}^2} \tilde{x}
+$$
+This ensures $\cE(P, x_*) \subseteq S$ defined in Remark \ref{rem:sec-set}. Now assuming \eqref{eqn:finsler_constraint} hold $\forall (x, \boldsymbol{\eta}) \in \cE(P, x_*)$, by the application of Lemma \ref{lem:finsler} we ensure $\boldsymbol{\eta} > 0$ through Remark \ref{rem:eta-positive}. Considering \eqref{eqn:nonlin-inclusion-constraint} we have
+$$
+\bmx{P & 0 & E_i\tr \\
+0 & 2 \Id & 0 \\
+E_i & 0 & \hat{\mu_i}^2} \geq 0
+$$
+By expressing $v_i = E_i x$ and pre and post multiplying by $\bmx{\tilde{x}\tr & \tilde{\Phi}(Ex)\tr}\tr$ we have:
+$$
+\bmx{\tilde{x}\\ \sqrt{\boldsymbol{\eta}}}\tr \bmx{P & 0\\ 0 & 2 \Id} \bmx{\tilde{x}\\ \sqrt{\boldsymbol{\eta}}} \geq \tilde{x}\tr \frac{E_i\tr E_i}{\hat{\mu_i}^2} \tilde{x} = \frac{v_i\tr v_i}{\hat{\mu_i}^2} \geq 0
+$$
+Once again this ensures $\cE(P, x_*) \subseteq \bar{S}$ defined in Assumption \ref{ass:nonlin} hence $\cE(P, x_*) \subseteq \left\{ S \cap \bar{S} \right\}$.
+
+We can define the following definite-positive candidate Lyapunov function structured as: $V = \tilde{x}\tr P \tilde{x} + \He{\1_l\tr\!\boldsymbol{\eta}}$. 
+By denoting $R_s$ as a proper transformation matrix such that $\bmx{\tilde{v}\tr & \tilde{\Phi}(Ex)}\tr = R_s \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)}\tr$ then
+\begin{equation}\label{eqn:sector-sign}
+\bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)}\tr R_s\tr \bmx{S & Q \\ \star & W} R_s \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}(Ex)} \geq 0\ \forall x \in \cE(P, x_*)
+\end{equation}
+With respect to \eqref{eqn:auxiliary} and \eqref{eqn:incremental} by denoting $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\nu}\tr}\tr = R_{\nu} \bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}(Ex)\tr}\tr$, if we pre and post multiply \eqref{eqn:lyapunov} by $\bmx{\tilde{x}\tr & \tilde{\psi}\tr & \tilde{\Phi}\tr & \sqrt{\boldsymbol{\eta}}\tr}\tr$ and its transpose\\
+
+
+
+
+
+we obtain \eqref{eqn:first-step}. Considering \eqref{eqn:sector-sign} we verify Assumption \ref{ass:nonlin} then by collecting the proper terms and exploiting Kronecker product's properties we have
+\begin{equation}
+\begin{aligned}
+&\bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}}\tr \left( \!
+  \bmx{\bar{A}\tr\\
+  \bar{B}\tr\\
+  C\tr
+  } P \bmx{\bar{A} & \bar{B} & C} - \bmx{
+  P & 0 & 0\\
+  0 & 0 & 0\\
+  0 & 0 & 0
+  } \right) \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\Phi}} + \\
+  &+ \He{\1_l\tr (\bR - \Id) \boldsymbol{\eta}} - \mathbf{\Psi_x} < 0\\
+\end{aligned}
+\end{equation}
+If all conditions in \eqref{eqn:LMI} are met then \eqref{eqn:lyapunov} implies the following:
+\begin{equation}
+    (\tilde{x}^+)^{\top} P \tilde{x}^+ - \tilde{x}\tr P \tilde{x} + \He{\1_l\tr (\boldsymbol{\eta}^+ - \boldsymbol{\eta})} = \Delta V < 0, 
+\end{equation}
+{\color{blue} for all $(x, \beta)\in \cE(P)$. Therefore, $\cE(P)$ is forward invariant and all trajectories starting inside such a set converge to $(x,0)$, thus concluding the proof.}
+We conclude the proof by stating that $\forall (x, \boldsymbol{\eta}) \in \cE(P, x_*)$ the point $(x_*, \0)$ is LES, and $\Delta V(x, \boldsymbol{\eta}) < 0$, considering that the system is in Discrete Time (DT) then $\cE(P, x_*)$ is an invariant set and it is an inner-approximation of the ROA
 \end{proof}
 \subsection{Optimization procedure}
 
