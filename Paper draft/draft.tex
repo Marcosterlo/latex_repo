@@ -342,9 +342,9 @@ R_s &\in \RR^{(n_x + n_{\phi} + n_q) \times (n_x + n_q)}
   &\bmx{
     P & {Z_j^i}\tr\\
     \star & 2 \alpha T^i_{j,j} - \alpha^2 (\hat{\nu}_j^i)^{-2}
-  } \geq 0 \ \forall i \in \left\{ 1, \dots, l \right\}, j \in \left\{ 1, \dots, n_{\phi_i} \right\} \label{eqn:inclusion}\\
-  &{R^i}\tr\! \He{X^i - \Omega^i} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \ \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint}\\
-  &\bmx{P & {E_i}\tr \\ \star & \hat{\mu_i}^2} \geq 0 \forall i \in \left\{1, \dots, n_q \right\} \label{eqn:nonlin-inclusion-constraint}
+  } \geq 0 \qquad \forall i \in \left\{ 1, \dots, l \right\}, j \in \left\{ 1, \dots, n_{\phi_i} \right\} \label{eqn:inclusion}\\
+  &{R^i}\tr\! \He{X^i - \Omega^i} R^i + He\left\{ \pmx{N^i_1\\ N^i_2\\ N^i_3} \pmx{R N_{\nu x} & \Id - R & -\Id}\right\} \leq 0 \qquad \forall i \in \left\{ 1, \dots, l \right\} \label{eqn:finsler_constraint}\\
+  &\bmx{P & {E_i}\tr \\ \star & \hat{\mu_i}^2} \geq 0 \qquad \forall i \in \left\{1, \dots, n_q \right\} \label{eqn:nonlin-inclusion-constraint}
 \end{align}
 \end{subequations}
 \vspace{.5em}
@@ -443,7 +443,41 @@ and considering \eqref{eqn:sector-sign} we verify Assumption \ref{ass:nonlin} th
 \end{equation}
 {\color{blue} Therefore, $\cE(P, x_*)$ is forward invariant and all trajectories starting inside such a set converge to $(x, \0)$, thus concluding the proof.}
 \end{proof}
+
 \subsection{Optimization procedure}
+We state now a corollary whose results will be useful to derive some performances upgrade that will be later discussed.
+
+\begin{corollary}\label{cor:optimization}
+  \emph{Given Theorem \ref{thm:stability}, considering the decision variables $\Sigma, P, T, Z, \bX, \bR, S, Q, W, N^1_i, N^2_i, N^3_i, \beta_i \quad \forall i \in \left\{ 1, \dots, l \right\}$ with $\Sigma$ being a diagonal matrix $\Sigma > 0 \in \RR^{(n_x + 2 n_{\phi} + n_q) \times (n_x + 2 n_{\phi} + n_q)}$, and $\beta_i$ being scalars with the following optimization scheme:}
+  \begin{equation}\label{eqn:optimization}
+  \begin{aligned}
+    &\min \trace{P} + \trace{\Sigma} + \sum_{i=1}^{l} \beta_i\\
+    &\text{subject to } \eqref{eqn:LMI},\\ 
+    &\qquad \qquad \Xi + \Sigma \geq 0,\\
+    &\qquad \qquad \bmx{-\beta_i \Id & X^i\\
+    {X^i}\tr & -\Id} \leq 0 \qquad i \in \left\{ 1, \dots, l \right\}
+  \end{aligned}
+  \end{equation}
+  \emph{Then $(x_*, \0)$ is LES and $\cE(P, x_*)$ is an inner approximation of the ROA.}
+\end{corollary}
+
+By adding these constraints we obtain some desirable performances upgrade:
+\begin{itemize}
+  \item By minimizing the trace of $P$ we are maximizing the volume of the ellipsoid $\cE(P, x_*)$ hence the ROA.
+  \item By minimizing the trace of $\Sigma$ we are minimizing the conservatism of the controller by obtaining a constraint matrix $\Xi$ directly related to the decay rate of the Lyapunov function as close to zero as possible but never greater due to the second condition in \eqref{eqn:optimization}.
+  \item By taking \eqref{eqn:optimization} and applying the Schur complement to the last condition we obtain
+  $$
+  X^i {X^i}\tr \leq \beta_i \Id
+  $$
+  meaning that the smaller the value of $\beta_i$ the smaller will be the value that appears directly in the ETM triggering condition \eqref{eqn:etm-trigger} hence the lower the number of events.
+\end{itemize}
+
+Let us comment the quantity $\alpha$ that appears in \eqref{eqn:inclusion}, if this was considered as a variable then the statements of Theorem \ref{thm:stability} would not hold since we would encounter some bilinear terms. By fixing $\alpha$ to a constant value before the LMI evaluation we address the problem. The choice of $\alpha$ value is crucial since it will directly affect the conservatism of the solution that the problem will provide. The followed approach sees the deployment of a \emph{golden ratio search} to extract a good value. The algorithm is based on the bisection method with some basic improvements:
+\begin{itemize}
+  \item Using the golden ratio to divide the interval reduces the number of LMI solutions compared to the bisection method. Converging faster since it narrows the search interval more efficiently.
+  \item It maintains a constant reduction factor for the interval size, leading to more consistent progress towards the optimal value.
+  \item It is particularly useful for unimodal functions like the one we are dealing with after we set the volume of the ROA as the parameter to optimize.
+\end{itemize}
 
 \section{Simulations}
 
