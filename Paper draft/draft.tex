@@ -288,11 +288,7 @@ With respect to \eqref{eqn:etm-trigger} and \eqref{eqn:eta_dynamics} we have two
 \end{itemize}
 By denoting 
 \begin{equation}
-<<<<<<< HEAD
     \bX = \text{diag} \pmx{{R^1}\tr X^1 R^1 & \dots & {R^l}\tr X^l & R^l}, \qquad \xi = \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\nu}}
-=======
-    \bX = \text{diag} \pmx{R_1\tr X^1 R_1 & \dots & R_l\tr X^l & R_l}, \qquad \xi = \bmx{\tilde{x} \\ \tilde{\psi} \\ \tilde{\nu}}
->>>>>>> refs/remotes/origin/main
 \end{equation}
 \begin{equation}\label{eqn:final-psi}
     \mathbf{\Psi_x} = \pmx{\Id_l \otimes \xi}\tr\! \bX \pmx{\1_l \otimes \xi}
@@ -384,19 +380,11 @@ $$
 \bmx{
 P & (T^i_{j,j} G^i_j)\tr\\
 \star & (T^i_{j,j})^2(\widehat{\nu}^i_j)^2
-<<<<<<< HEAD
 } \succeq 
 \bmx{
 P & {Z_j^i}\tr\\
 \star & 2 \alpha T^i_{j,j} - \alpha^2 (\widehat{\nu}_j^i)^{-2}
 } \succeq 0
-=======
-} \geq 
-\bmx{
-P & {Z_j^i}\tr\\
-\star & 2 \alpha T^i_{j,j} - \alpha^2 (\widehat{\nu}_j^i)^{-2}
-} \geq 0
->>>>>>> refs/remotes/origin/main
 $$
 That implies
 $$
@@ -542,11 +530,7 @@ $$
 Finally, we analyze the number of simulation steps required to reach the previously mentioned threshold. A considerable decrease in the update rate of the controller is observed with every proposed method, accompanied by a more uniform event pattern across the different layers. The increased conservatism observed in $\cS 2$ is counterbalanced by the introduction of $X^i$ matrices in Lemma \ref{lem:finsler}, which leads to a larger ROA approximation and an improved update profile. $\cS 4$ represents a performance trade-off compared to $\cS 3$ in terms of computational savings and ellipsoid size. Both $\cS 3$ and $\cS 4$ maintain a low value for $\lambda_{\text{tot}}$ while having higher $n_{\text{steps}}$, indicating that the raw number of events is low, leading to more efficient event-triggering and fewer updates.
 
 The following plots refer to $\cS 4$ with $$
-<<<<<<< HEAD
 x_0 = \bmx{-9.43(deg) \\ 5.77(rad/s) \\  0.0}; \quad \boldsymbol{\eta}_0 = 0.01 \cdot \1; \quad d = 2.76(deg)$$ 
-=======
-x_0 = \pmx{-9.43(deg) & 5.77(rad/s) &  0.0}\tr; \quad \boldsymbol{\eta}_0 = 0.01 \cdot \1$$ 
->>>>>>> refs/remotes/origin/main
 as initial configuration.
 
 \begin{figure}[H]
@@ -580,11 +564,7 @@ as initial configuration.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{Figures/ellipsoid_plot}
-<<<<<<< HEAD
     \caption{Trajectory of the system within $\cE(P, x_*)$ and with respect to its projections}
-=======
-    \caption{Trajectory of the system within $\cE(P, x_*)$}
->>>>>>> refs/remotes/origin/main
     \label{fig:ellipsoid}
 \end{figure}
 
